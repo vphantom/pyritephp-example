@@ -11,6 +11,11 @@ Just use this repo as your starting point, modify this file and the contents of 
 This framework was actually built as the starting point for a commercial project named "PyriteView" as a play on the words "Peer Review".  The framework was then forked on its own as it is highly generic.  The name "PyritePHP" then made sense, considering its origin.
 
 
+## CURRENTLY UNDER DEVELOPMENT!
+
+As of November 2016, PyritePHP is under active development and has not yet achieved its "v1.0.0" milestone.  You probably want to wait for that initial full-featured release before using or forking it.
+
+
 ## Installation
 
 ### Requirements
