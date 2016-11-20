@@ -72,7 +72,7 @@ location / {
 ```
 # TODO: Deny private directories
 url.rewrite-if-not-file (
-    "^(.*)$" => "/index.php/$1"
+    "^/(.*)$" => "/index.php/$1"
 )
 ```
 
