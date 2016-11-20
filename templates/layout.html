@@ -33,10 +33,10 @@
 					<form class="navbar-form navbar-right" method="post" action="/login" id="login-form">
 						{{ filter('form_begin', 'login-form') |raw }}
 						<div class="form-group">
-							<input type="text" placeholder="E-Mail" class="form-control">
+							<input type="text" name="email" placeholder="E-Mail" value="{{ post.email }}" class="form-control">
 						</div>
 						<div class="form-group">
-							<input type="password" placeholder="Password" class="form-control">
+							<input type="password" name="password" placeholder="Password" class="form-control">
 						</div>
 						<button type="submit" class="btn btn-success">Sign in</button>
 					</form>
@@ -44,19 +44,6 @@
 				</div>
 			</div>
 		</nav>
-
-		{{ body |raw }}
-		{{ stdout |raw }}
-
-	</body>
-</html>
-{% endblock %}
-
-
-{% block body_error %}
-<title>{{ title }} {{ http_status }}</title>
-	</head>
-	<body>
 
 		{{ body |raw }}
 		{{ stdout |raw }}

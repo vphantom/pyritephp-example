@@ -72,7 +72,7 @@ class Twigger
         if (self::$_status !== 200) {
             http_response_code(self::$_status);
         };
-        echo self::$_template->renderBlock('head', array('http_status' => self::$_status, 'session' => $_SESSION));
+        echo self::$_template->renderBlock('head', array('http_status' => self::$_status, 'session' => $_SESSION, 'post' => $_POST));
         flush();
         ob_start();
     }
@@ -84,20 +84,17 @@ class Twigger
      */
     public static function shutdown()
     {
-        $name = 'body';
-        if (self::$_status !== 200) {
-            $name .= '_error';
-        };
         $body = ob_get_contents();
         ob_end_clean();
         echo self::$_template->renderBlock(
-            $name,
+            'body',
             array(
                 'http_status' => self::$_status,
                 'title' => self::$_title,
                 'body' => self::$_safeBody,
                 'stdout' => $body,
-                'session' => $_SESSION
+                'session' => $_SESSION,
+                'post' => $_POST
             )
         );
     }
@@ -141,7 +138,10 @@ class Twigger
     {
         $env = array_merge(
             $args, array(
-                'session' => $_SESSION
+                'http_status' => self::$_status,
+                'title' => self::$_title,
+                'session' => $_SESSION,
+                'post' => $_POST
             )
         );
         self::$_safeBody .= self::$_twig->render($name, $env);

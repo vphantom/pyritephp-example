@@ -37,7 +37,7 @@ Then, running `make distrib` any time will rebuild `client.css[.gz]` and `client
 
 ## Templating
 
-All templates have variable `session` which is equivalent to `$_SESSION` as well as `grab()`, `pass()` and `filter()` from the PHP side.
+All templates have variables `session` and `post` equivalent to `$_SESSION` and `$_POST`, as well as `grab()`, `pass()` and `filter()` from the PHP side.
 
 A single template file is mandatory: `layout.html` which is divided into three blocks:
 
@@ -51,21 +51,19 @@ Variables available: `session`, `http_status`
 
 If processing the request was successful, during event `shutdown` this is displayed for the rest of the document, including TITLE, closing HEAD, etc.  As `body` is partial HTML, it should be filtered with `|raw` in the template to avoid escaping.
 
-Variables available: `session`, `title`, `body`, `stdout`
-
-### body_error
-
-When a non-200 HTTP status code was set, these are rendered instead and must thus provide the same structure.
-
 Variables available: `session`, `http_status`, `title`, `body`, `stdout`
 
-Typical status codes:
+If `http_status` isn't 200, you may want to display a helpful error message.  Typical codes:
+
+**403** When the user needs to be logged in, but isn't.  (Not 401 to avoid native browser password prompt.)
 
 **404** When no module declared support for the base of the requested URL.
 
+**440** Recommended when an operation fails because the session expired.
+
 **500** When a module handled the requested URL, but returned `false`.
 
-For debugging purposes, `body` and `body_error` also have special variable `stdout` available which contains the output captured from all code that ran between `startup` and `shutdown` events.  Output by any code not using the `render` event to display templates safely ends up here.
+For debugging purposes, `body` also has special variable `stdout` available which contains the output captured from all code that ran between `startup` and `shutdown` events.  Output by any code not using the `render` event to display templates safely ends up here.
 
 
 ## Database
