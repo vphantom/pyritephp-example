@@ -1,0 +1,16 @@
+<div class="jumbotron">
+	<div class="container">
+		{% if http_status == 440 %}
+		<h1>Session Expired</h1>
+		{% elseif http_status == 403 %}
+		<h1>Please Sign In</h1>
+		{% else %}
+		<h1>Welcome to PyritePHP!</h1>
+		{% endif %}
+		{% if try_again %}
+		<p>The e-mail address and/or password you entered is incorrect.</p>
+		{% endif %}
+		<p>In order to use this application, you need to log in to your account here.  If you don't have an account yet, please consider registering.</p>
+		<p><a class="btn btn-primary btn-lg" href="#" role="button">Register &raquo;</a></p>
+	</div>
+</div>
