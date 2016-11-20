@@ -1,8 +1,11 @@
-# pyriteview
+# PyritePHP
 
-Article versioning hub for peer-reviewed publications.
+PHP/Bootstrap boilerplate framework to kick-start web application development
 
-This simple hub allows publication editors, single edition editors, article authors as well as third-party reviewers to come together to centralize the peer-reviewing workflow.
+Simple event-driven framework for creating PHP 5 applications backed by a PDO database and with a Twitter Bootstrap user interface.
+
+Just use this repo as your starting point, modify this file and the contents of `modules/` and `templates/` to suit your needs.  The rest of the developer documentation can be found in [Developers](DEVELOPERS.md).
+
 
 ## Installation
 
@@ -70,13 +73,6 @@ Clone or unzip this repository into the document root of the web site this will 
 
 You will also need to make sure that your web server or PHP process has read-write access to the `var/` directory where the database, logs and template cache are stored.
 
-## Usage
-
-TODO
-
-## Developers
-
-See [Developers](DEVELOPERS.md).
 
 ## MIT License
 

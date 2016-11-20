@@ -63,7 +63,7 @@ client.css:	$(CSS_SRC)
 	cat $@.tmp |sed 's/\.\.\/\(fonts\)/\1/g' >$@
 	rm -f $@.tmp
 
-client.js:	modules/pyriteview.js
+client.js:	modules/main.js
 	$(BROWSERIFY) $< -d -o bundle.js
 	$(JS) --source-map client.js.map -o client.js -- bundle.js
 	rm -f bundle.js

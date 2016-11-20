@@ -1,12 +1,12 @@
 # Developers
 
-PyriteView is completely modular  and thus easily modified or augmented.  Plugins can be added to `modules/` and handle any existing event (see below) as well as provide additional classes and functions.
+PyritePHP is completely modular  and thus easily modified or augmented.  Plugins can be added to `modules/` and handle any existing event (see below) as well as provide additional classes and functions.
 
 The build process compiles `modules/*.css` into a single file, so add-on modules just need to supply their own separate CSS file at no cost.
 
-Similarly, the build compiles `modules/*.js` into a single script, so add-on modules should supply their own JS module rather than modify `pyriteview.js`. **FIXME:** Do we need to bootstrap them?
+Similarly, the build compiles `modules/*.js` into a single script, so add-on modules should supply their own JS module rather than modify `main.js`. **FIXME:** Do we need to bootstrap them?
 
-To summarize, a typical plugin involved with all aspects of PyriteView would consist of three new files added to `modules/`.  For example:
+To summarize, a typical plugin involved with all aspects of PyritePHP would consist of three new files added to `modules/`.  For example:
 
 * `modules/example.php`
 * `modules/example.css`
@@ -26,7 +26,7 @@ Similarly, if more than one module-specific template file is created, it should 
 
 ### Requirements
 
-In addition to the run-time requirements, for building PyriteView you will also need:
+In addition to the run-time requirements, for building PyritePHP you will also need:
 
 * NodeJS for its package manager "NPM"
 
@@ -106,11 +106,11 @@ Any URL not resolvable to an event handler will yield an HTTP 404 error.
 
 ## Events
 
-With only the above exceptions, PyriteView is event-driven to keep its structure completely modular.  It uses the simple and elegant [Sphido Events library](https://github.com/sphido/events) with a couple of handy helper functions thrown in:
+With only the above exceptions, PyritePHP is event-driven to keep its structure completely modular.  It uses the simple and elegant [Sphido Events library](https://github.com/sphido/events) with a couple of handy helper functions thrown in:
 
 #### on($event, $callable[, $priority = 10])
 
-Declare a handler for event named `$event`, which will be called with possible arguments.  (See details in `trigger()`.)  The optional priority allows us to guarantee an order in which handlers for a same event are called.  In PyriteView, those are between 1 and 99.  Examples:
+Declare a handler for event named `$event`, which will be called with possible arguments.  (See details in `trigger()`.)  The optional priority allows us to guarantee an order in which handlers for a same event are called.  In PyritePHP, those are between 1 and 99.  Examples:
 
 ```php
 on('foo', 'MyClass::myStaticMethod');

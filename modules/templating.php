@@ -6,22 +6,22 @@
  * PHP version 5
  *
  * @category  Library
- * @package   PyriteView
+ * @package   PyritePHP
  * @author    Stéphane Lavergne <lis@imars.com>
  * @copyright 2016 Stéphane Lavergne
- * @license   http://www.gnu.org/licenses/agpl-3.0.txt  GNU AGPL version 3
- * @link      https://github.com/vphantom/pyriteview
+ * @license   https://opensource.org/licenses/MIT  MIT
+ * @link      https://github.com/vphantom/pyrite-php
  */
 
 /**
  * Twigger class
  *
  * @category  Library
- * @package   PyriteView
+ * @package   PyritePHP
  * @author    Stéphane Lavergne <lis@imars.com>
  * @copyright 2016 Stéphane Lavergne
- * @license   http://www.gnu.org/licenses/agpl-3.0.txt  GNU AGPL version 3
- * @link      https://github.com/vphantom/pyriteview
+ * @license   https://opensource.org/licenses/MIT  MIT
+ * @link      https://github.com/vphantom/pyrite-php
  */
 class Twigger
 {

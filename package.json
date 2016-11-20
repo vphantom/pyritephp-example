@@ -1,22 +1,22 @@
 {
-  "name": "pyriteview",
+  "name": "pyritephp",
   "version": "1.0.0",
-  "description": "Article versioning hub for peer-reviewed publications",
+  "description": "PHP/Bootstrap boilerplate framework to kick-start web application development",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vphantom/pyriteview.git"
+    "url": "git+https://github.com/vphantom/pyrite-php.git"
   },
   "author": "Stéphane Lavergne <lis@imars.com> (https://github.com/vphantom)",
-  "license": "AGPL-3.0",
+  "license": "MIT",
   "private": true,
   "bugs": {
-    "url": "https://github.com/vphantom/pyriteview/issues"
+    "url": "https://github.com/vphantom/pyrite-php/issues"
   },
-  "homepage": "https://github.com/vphantom/pyriteview#readme",
+  "homepage": "https://github.com/vphantom/pyrite-php#readme",
   "dependencies": {},
   "devDependencies": {
     "bootstrap": "^3.3.7",
