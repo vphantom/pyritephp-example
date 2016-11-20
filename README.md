@@ -6,6 +6,10 @@ Simple event-driven framework for creating PHP 5 applications backed by a PDO da
 
 Just use this repo as your starting point, modify this file and the contents of `modules/` and `templates/` to suit your needs.  The rest of the developer documentation can be found in [Developers](DEVELOPERS.md).
 
+### Why the name "Pyrite"?
+
+This framework was actually built as the starting point for a commercial project named "PyriteView" as a play on the words "Peer Review".  The framework was then forked on its own as it is highly generic.  The name "PyritePHP" then made sense, considering its origin.
+
 
 ## Installation
 
