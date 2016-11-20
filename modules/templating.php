@@ -45,13 +45,34 @@ class Twigger
                 'autoescape' => true,
             )
         );
+        $twig->addFunction(
+            new \Twig_SimpleFunction(
+                'grab', function () {
+                    return array_pop(call_user_func_array('trigger', func_get_args()));
+                }
+            )
+        );
+        $twig->addFunction(
+            new \Twig_SimpleFunction(
+                'pass', function () {
+                    return array_pop(call_user_func_array('trigger', func_get_args())) !== false;
+                }
+            )
+        );
+        $twig->addFunction(
+            new \Twig_SimpleFunction(
+                'filter', function () {
+                    return call_user_func_array('filter', func_get_args());
+                }
+            )
+        );
         self::$_twig = $twig;
         self::$_template = $twig->loadTemplate('layout.html');
 
         if (self::$_status !== 200) {
             http_response_code(self::$_status);
         };
-        echo self::$_template->renderBlock('init', array('http_status' => self::$_status));
+        echo self::$_template->renderBlock('head', array('http_status' => self::$_status, 'session' => $_SESSION));
         flush();
         ob_start();
     }
@@ -63,17 +84,22 @@ class Twigger
      */
     public static function shutdown()
     {
-        $headName = 'head';
-        $footName = 'foot';
+        $name = 'body';
         if (self::$_status !== 200) {
-            $headName .= '_error';
-            $footName .= '_error';
+            $name .= '_error';
         };
         $body = ob_get_contents();
         ob_end_clean();
-        echo self::$_template->renderBlock($headName, array('http_status' => self::$_status, 'title' => self::$_title));
-        echo self::$_safeBody;
-        echo self::$_template->renderBlock($footName, array('http_status' => self::$_status, 'body' => $body));
+        echo self::$_template->renderBlock(
+            $name,
+            array(
+                'http_status' => self::$_status,
+                'title' => self::$_title,
+                'body' => self::$_safeBody,
+                'stdout' => $body,
+                'session' => $_SESSION
+            )
+        );
     }
 
     /**
@@ -111,9 +137,14 @@ class Twigger
      *
      * @return null
      */
-    public static function render($name, $args)
+    public static function render($name, $args = array())
     {
-        self::$_safeBody .= self::$_twig->render($name, $args);
+        $env = array_merge(
+            $args, array(
+                'session' => $_SESSION
+            )
+        );
+        self::$_safeBody .= self::$_twig->render($name, $env);
     }
 }
 

@@ -35,27 +35,29 @@ Run `make dev-init` to initially download the requirements for the build process
 Then, running `make distrib` any time will rebuild `client.css[.gz]` and `client.js[.gz]`.
 
 
-## Template Files
+## Templating
 
-A single file is mandatory: `layout.html` which is divided into five blocks:
+All templates have variable `session` which is equivalent to `$_SESSION` as well as `grab()`, `pass()` and `filter()` from the PHP side.
 
-### init
+A single template file is mandatory: `layout.html` which is divided into three blocks:
+
+### head
 
 Displayed and flushed to the browser as early as possible.  Should reference resources and *not* include a TITLE tag yet.
 
-Variables available: `http_status`
+Variables available: `session`, `http_status`
 
-### head / foot
+### body
 
-If processing the request was successful, during event `shutdown` this is displayed for the rest of the document, including TITLE, closing HEAD, etc.
+If processing the request was successful, during event `shutdown` this is displayed for the rest of the document, including TITLE, closing HEAD, etc.  As `body` is partial HTML, it should be filtered with `|raw` in the template to avoid escaping.
 
-Variables available: `title`
+Variables available: `session`, `title`, `body`, `stdout`
 
-### head_error / foot_error
+### body_error
 
 When a non-200 HTTP status code was set, these are rendered instead and must thus provide the same structure.
 
-Variables available: `http_status`, `title`
+Variables available: `session`, `http_status`, `title`, `body`, `stdout`
 
 Typical status codes:
 
@@ -63,7 +65,7 @@ Typical status codes:
 
 **500** When a module handled the requested URL, but returned `false`.
 
-For debugging purposes, `foot` and `foot_error` also have special variable `body` available which contains the *escaped* output captured from all code that ran between `startup` and `shutdown` events.  Output by any code not using the `render` event to display templates safely ends up here.
+For debugging purposes, `body` and `body_error` also have special variable `stdout` available which contains the output captured from all code that ran between `startup` and `shutdown` events.  Output by any code not using the `render` event to display templates safely ends up here.
 
 
 ## Database
