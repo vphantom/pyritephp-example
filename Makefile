@@ -9,6 +9,8 @@ GZIP       := gzip -f -n -k -9
 
 CSS_SRC := node_modules/bootstrap/dist/css/bootstrap.css node_modules/bootstrap/dist/css/bootstrap-theme.css $(wildcard modules/*.css)
 
+JS_TOUCH := $(wildcard modules/*.js)
+
 help:
 	@echo
 	@echo "  [ Users ]  make init    - First-time initialization"
@@ -64,8 +66,8 @@ client.css:	$(CSS_SRC)
 	cat $@.tmp |sed 's/\.\.\/\(fonts\)/\1/g' >$@
 	rm -f $@.tmp
 
-client.js:	modules/main.js
-	$(BROWSERIFY) $< -d -o bundle.js
+client.js:	$(JS_TOUCH)
+	$(BROWSERIFY) modules/main.js -d -o bundle.js
 	$(JS) --source-map client.js.map -o client.js -- bundle.js
 	rm -f bundle.js
 
