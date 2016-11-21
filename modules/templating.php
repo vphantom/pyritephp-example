@@ -30,6 +30,7 @@ class Twigger
     private static $_status = 200;
     private static $_template;
     private static $_safeBody = '';
+    private static $_redirect = false;
 
     /**
      * Initialize wrapper around Twig templating and display headers
@@ -72,7 +73,14 @@ class Twigger
         if (self::$_status !== 200) {
             http_response_code(self::$_status);
         };
-        echo self::$_template->renderBlock('head', array('http_status' => self::$_status, 'session' => $_SESSION, 'post' => $_POST));
+        echo self::$_template->renderBlock(
+            'head',
+            array(
+                'http_status' => self::$_status,
+                'session' => $_SESSION,
+                'post' => $_POST
+            )
+        );
         flush();
         ob_start();
     }
@@ -90,6 +98,7 @@ class Twigger
             'body',
             array(
                 'http_status' => self::$_status,
+                'http_redirect' => self::$_redirect,
                 'title' => self::$_title,
                 'body' => self::$_safeBody,
                 'stdout' => $body,
@@ -111,6 +120,18 @@ class Twigger
         if ($code >= 100  &&  $code < 600) {
             self::$_status = (int)$code;
         };
+    }
+
+    /**
+     * Ask layout template for a META redirect
+     *
+     * @param string $url The new location (can be relative)
+     *
+     * @return null
+     */
+    public static function redirect($url)
+    {
+        self::$_redirect = $url;
     }
 
     /**
@@ -139,6 +160,7 @@ class Twigger
         $env = array_merge(
             $args, array(
                 'http_status' => self::$_status,
+                'http_redirect' => self::$_redirect,
                 'title' => self::$_title,
                 'session' => $_SESSION,
                 'post' => $_POST
@@ -153,4 +175,4 @@ on('shutdown', 'Twigger::shutdown', 1);
 on('render', 'Twigger::render');
 on('title', 'Twigger::title');
 on('http_status', 'Twigger::status');
-
+on('http_redirect', 'Twigger::redirect');

@@ -39,6 +39,8 @@ Then, running `make distrib` any time will rebuild `client.css[.gz]` and `client
 
 All templates have variables `session` and `post` equivalent to `$_SESSION` and `$_POST`, as well as `grab()`, `pass()` and `filter()` from the PHP side.
 
+Most templates have `http_status` which is an integer between 100 and 599 as well as `http_redirect` which is either false or a URL to refresh to (typically via META tags in `layout.html`).
+
 A single template file is mandatory: `layout.html` which is divided into three blocks:
 
 ### head
@@ -51,7 +53,7 @@ Variables available: `session`, `http_status`
 
 If processing the request was successful, during event `shutdown` this is displayed for the rest of the document, including TITLE, closing HEAD, etc.  As `body` is partial HTML, it should be filtered with `|raw` in the template to avoid escaping.
 
-Variables available: `session`, `http_status`, `title`, `body`, `stdout`
+Variables available: `session`, `http_status`, `http_redirect`, `title`, `body`, `stdout`
 
 If `http_status` isn't 200, you may want to display a helpful error message.  Typical codes:
 
@@ -64,6 +66,8 @@ If `http_status` isn't 200, you may want to display a helpful error message.  Ty
 **500** When a module handled the requested URL, but returned `false`.
 
 For debugging purposes, `body` also has special variable `stdout` available which contains the output captured from all code that ran between `startup` and `shutdown` events.  Output by any code not using the `render` event to display templates safely ends up here.
+
+Our example code also uses `register.html` which is displayed when not logged in for any reason.
 
 
 ## Database
@@ -171,6 +175,10 @@ Triggered when the current user's identity or credentials have changed.  Useful 
 #### http_status (*$code*)
 
 The router triggers this to notify the template when we have a 404 or 500 situation.  You may trigger it for other situations as necessary, although after the `startup` phase is complete, headers are already sent to the browser and this will no longer affect the HTTP status, only which template gets displayed for the body of the page.  (See "Templating / Files".)
+
+#### http_redirect (*$url$)
+
+Will be directly relayed to subsequent blocks of `layout.html` being rendered by the templating module.  The URL can be relative.
 
 #### title (*$prepend*[, *$sep*])
 

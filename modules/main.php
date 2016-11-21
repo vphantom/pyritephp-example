@@ -56,7 +56,7 @@ on(
             trigger('render', 'register.html', array('try_again' => true));
             return;
         };
-        trigger('route/main');
+        trigger('http_redirect', '/');
     }
 );
 

@@ -13,6 +13,9 @@
 
 
 {% block body %}
+		{% if http_redirect %}
+		<meta http-equiv="refresh" content="0; url={{ http_redirect }}">
+		{% endif %}
 		<title>{{ title }}</title>
 	</head>
 	<body>
