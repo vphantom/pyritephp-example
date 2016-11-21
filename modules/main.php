@@ -35,11 +35,13 @@ function isGuest()
 on(
     'route/main',
     function () {
-        if ($_SESSION['USER_OK']) {
-            trigger('route/dashboard');
-        } else {
+        if (!$_SESSION['USER_OK']) {
             trigger('render', 'register.html');
+            return;
         };
+        if (isGuest()) return;
+        // TODO: Your application's authenticated interface starts here.
+        echo "<p>Dashboard will go here</p>\n";
     }
 );
 
@@ -69,9 +71,19 @@ on(
 );
 
 on(
-    'route/dashboard',
+    'route/user+prefs',
     function () {
         if (isGuest()) return;
-        // TODO: Your application's authenticated interface starts here.
+        if (isset($_POST['email'])) {
+            if (!pass('form_validate', 'user_edit')) {
+                trigger('http_status', 440);
+                trigger('render', 'register.html');
+                return;
+            };
+            // TODO: Process form content
+            echo "<p>We will save the form here.</p>\n";
+            return;
+        };
+        trigger('render', 'user_prefs.html');
     }
 );
