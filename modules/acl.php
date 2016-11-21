@@ -39,9 +39,9 @@ class ACL
             "
             CREATE TABLE IF NOT EXISTS 'acl_roles' (
                 role       VARCHAR(64) NOT NULL DEFAULT '',
-                action     VARCHAR(64) DEFAULT NULL,
-                objectType VARCHAR(64) DEFAULT NULL,
-                objectId   INTEGER     DEFAULT NULL
+                action     VARCHAR(64) NOT NULL DEFAULT '*',
+                objectType VARCHAR(64) NOT NULL DEFAULT '*',
+                objectId   INTEGER     NOT NULL DEFAULT '0'
             )
             "
         );
@@ -152,17 +152,17 @@ class ACL
 
         $acl = $_SESSION['ACL_INFO'];
 
-        if (array_key_exists(null, $acl)) {
+        if (array_key_exists('*', $acl)) {
             return true;
         };
         if (array_key_exists($action, $acl)) {
             $acl2 = $acl[$action];
-            if (array_key_exists(null, $acl2)) {
+            if (array_key_exists('*', $acl2)) {
                 return true;
             };
             if (array_key_exists($objectType, $acl2)) {
                 $acl3 = $acl2[$objectType];
-                if (in_array(null, $acl3) || in_array($objectId, $acl3)) {
+                if (in_array(0, $acl3) || in_array($objectId, $acl3)) {
                     return true;
                 };
             };
