@@ -35,6 +35,7 @@ class ACL
     {
         global $db;
         echo "    Installing ACL...";
+
         $db->exec(
             "
             CREATE TABLE IF NOT EXISTS 'acl_roles' (
@@ -47,14 +48,31 @@ class ACL
         );
         $db->exec(
             "
+            CREATE UNIQUE INDEX IF NOT EXISTS idx_acl_roles
+            ON acl_roles (role, action, objectType, objectId)
+            "
+        );
+        if (!$db->selectAtom("SELECT role FROM acl_roles WHERE role='admin'")) {
+            $db->exec("INSERT INTO acl_roles VALUES ('admin', '*', '*', '0')");
+        };
+
+        $db->exec(
+            "
             CREATE TABLE IF NOT EXISTS 'acl_users' (
                 userId     INTEGER     NOT NULL DEFAULT '0',
-                action     VARCHAR(64) DEFAULT NULL,
-                objectType VARCHAR(64) DEFAULT NULL,
-                objectId   INTEGER     DEFAULT NULL
+                action     VARCHAR(64) NOT NULL DEFAULT '*',
+                objectType VARCHAR(64) NOT NULL DEFAULT '*',
+                objectId   INTEGER     NOT NULL DEFAULT '0'
             )
             "
         );
+        $db->exec(
+            "
+            CREATE UNIQUE INDEX IF NOT EXISTS idx_acl_users
+            ON acl_users (userId, action, objectType, objectId)
+            "
+        );
+
         $db->exec(
             "
             CREATE TABLE IF NOT EXISTS 'users_roles' (
@@ -63,6 +81,15 @@ class ACL
             )
             "
         );
+        $db->exec(
+            "
+            CREATE UNIQUE INDEX IF NOT EXISTS idx_users_roles
+            ON users_roles (userId, role)
+            "
+        );
+        if (!$db->selectAtom("SELECT userId FROM users_roles WHERE userId='1' AND role='admin'")) {
+            $db->exec("INSERT INTO users_roles VALUES ('1', 'admin')");
+        };
         echo "    done!\n";
     }
 

@@ -34,7 +34,7 @@ class User
     public static function install()
     {
         global $db;
-        echo "    Installing users... ";
+        echo "    Installing users...\n";
         $db->exec(
             "
             CREATE TABLE IF NOT EXISTS 'users' (
@@ -44,6 +44,29 @@ class User
             )
             "
         );
+        if (!$db->selectAtom("SELECT id FROM users WHERE id='1'")) {
+            echo "Creating admin user...\n";
+            $email = readline("E-mail address: ");
+            $pass1 = true;
+            $pass2 = false;
+            while ($pass1 !== $pass2) {
+                if ($pass1 !== true) {
+                    echo "  * Password confirmation mis-match.\n";
+                };
+                $pass1 = readline("Password: ");
+                $pass2 = readline("Password again: ");
+            };
+            $db->exec(
+                "
+                INSERT INTO users VALUES
+                (1, ?, ?)
+                ",
+                array(
+                    $email,
+                    password_hash($pass1, PASSWORD_DEFAULT)
+                )
+            );
+        };
         echo "    done!\n";
     }
 
