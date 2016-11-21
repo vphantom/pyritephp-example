@@ -78,7 +78,7 @@ url.rewrite-if-not-file (
 
 ### First-time initialization
 
-Clone or unzip this repository into the document root of the web site this will become, and run `make init` in that directory.  This will automatically download and set up PHP's Composer package manager, then use it to download runtime dependencies locally.
+Clone or unzip this repository into the document root of the web site this will become, and run `make init` in that directory.  This will automatically download and set up PHP's Composer package manager, then use it to download runtime dependencies locally.  Finally, it will create the database tables and the administrative user so you can log into your new installation.  You will be prompted on the command line for an e-mail address and password to use for that unrestricted account.
 
 You will also need to make sure that your web server or PHP process has read-write access to the `var/` directory where the database, logs and template cache are stored.
 
