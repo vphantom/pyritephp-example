@@ -40,7 +40,8 @@ class User
             CREATE TABLE IF NOT EXISTS 'users' (
                 id           INTEGER PRIMARY KEY AUTOINCREMENT,
                 email        VARCHAR(255),
-                passwordHash VARCHAR(255)
+                passwordHash VARCHAR(255),
+                name         VARCHAR(255)
             )
             "
         );
@@ -59,7 +60,7 @@ class User
             $db->exec(
                 "
                 INSERT INTO users VALUES
-                (1, ?, ?)
+                (1, ?, ?, 'Administrator')
                 ",
                 array(
                     $email,

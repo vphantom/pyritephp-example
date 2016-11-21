@@ -102,9 +102,11 @@ class Session
             return false;
         };
     }
+
 }
 
 on('startup', 'Session::startup', 1);
 on('shutdown', 'Session::shutdown', 99);
 on('login', 'Session::login', 1);
+on('logout', 'Session::reset', 1);
 

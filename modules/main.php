@@ -61,6 +61,14 @@ on(
 );
 
 on(
+    'route/logout',
+    function () {
+        trigger('logout');
+        trigger('http_redirect', '/');
+    }
+);
+
+on(
     'route/dashboard',
     function () {
         if (isGuest()) return;

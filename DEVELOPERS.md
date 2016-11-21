@@ -215,6 +215,10 @@ After the main content area of the current page is buffered, it is passed throug
 
 Attempts logging in and saves the credentials in the current session if successful.  This should be triggered with `pass()` when processing a login or ID confirmation form.
 
+#### logout
+
+Trigger this event to wipe the current session clean.
+
 #### can (*$verb*[, *$objectType*[, *$objectId*]])
 
 Returns true if the current user is allowed to perform the action named `$verb`, either by itself or acting upon an object of type `$objectType`, possibly a specific instance `$objectId`.  This should be triggered with `pass()` to obtain a clean boolean result.
