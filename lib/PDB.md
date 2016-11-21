@@ -74,7 +74,7 @@ The result is the value returned in row 0, column 0. Useful for `COUNT(*)` and s
 * `$q` — `string` — SQL query with '?' value placeholders
 * `$args` — `array` — (Optional) List of values corresponding to placeholders
 
-**Returns:** `mixed` — Single result cell, null if no results
+**Returns:** `mixed` — Single result cell, false if no results
 
 
 ### selectList(*$q*, *$args* = array())

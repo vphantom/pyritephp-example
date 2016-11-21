@@ -159,7 +159,7 @@ class PDB
      * @param string $q    SQL query with '?' value placeholders
      * @param array  $args (Optional) List of values corresponding to placeholders
      *
-     * @return mixed Single result cell, null if no results
+     * @return mixed Single result cell, false if no results
      */
     public function selectAtom($q, $args = array())
     {
