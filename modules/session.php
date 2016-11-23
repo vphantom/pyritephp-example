@@ -103,10 +103,21 @@ class Session
         };
     }
 
+    /**
+     * Refresh session cache of user data
+     *
+     * @param array $data New user information
+     *
+     * @return null
+     */
+    public static function reloadUser($data)
+    {
+        $_SESSION['USER_INFO'] = $data;
+    }
 }
 
 on('startup', 'Session::startup', 1);
 on('shutdown', 'Session::shutdown', 99);
 on('login', 'Session::login', 1);
 on('logout', 'Session::reset', 1);
-
+on('user_changed', 'Session::reloadUser', 1);

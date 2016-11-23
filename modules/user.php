@@ -91,7 +91,40 @@ class User
 
         return false;
     }
+
+    /**
+     * Update an existing user's information
+     *
+     * If an 'id' key is present in $cols, it is silently ignored.
+     *
+     * @param int   $id   ID of the user to update
+     * @param array $cols Associative array of columns to update
+     *
+     * @return bool Whether it succeeded
+     */
+    public static function update($id, $cols = array())
+    {
+        global $db;
+
+        if (isset($cols['id'])) {
+            unset($cols['id']);
+        };
+
+        $result = $db->update(
+            'users',
+            $cols,
+            'WHERE id=?',
+            array($id)
+        );
+        if ($result) {
+            trigger('user_changed', $db->selectSingleArray("SELECT * FROM users WHERE id=?", array($id)));
+            return true;
+        };
+
+        return false;
+    }
 }
 
 on('install', 'User::install');
 on('authenticate', 'User::login');
+on('user_update', 'User::update');

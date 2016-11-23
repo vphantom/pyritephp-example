@@ -162,6 +162,7 @@ add_filter('price', function($price) {
 echo filter('price', 100); // print The price is: 100 USD
 ```
 
+Below is a partial list of events present in PyritePHP and its demo/framework application, which may be of interest to developers:
 
 ### Global Events
 

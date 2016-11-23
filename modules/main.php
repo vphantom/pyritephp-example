@@ -74,16 +74,25 @@ on(
     'route/user+prefs',
     function () {
         if (isGuest()) return;
+        $saved = false;
+        $success = false;
         if (isset($_POST['email'])) {
             if (!pass('form_validate', 'user_edit')) {
                 trigger('http_status', 440);
                 trigger('render', 'register.html');
                 return;
             };
-            // TODO: Process form content
-            echo "<p>We will save the form here.</p>\n";
-            return;
+            $saved = true;
+            $success = pass('user_update', $_SESSION['USER_INFO']['id'], $_POST);
         };
-        trigger('render', 'user_prefs.html');
+
+        trigger(
+            'render',
+            'user_prefs.html',
+            array(
+                'saved' => $saved,
+                'success' => $success
+            )
+        );
     }
 );

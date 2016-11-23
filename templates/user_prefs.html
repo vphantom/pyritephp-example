@@ -2,6 +2,16 @@
 
 <h1>Preferences</h1>
 
+{% if saved %}
+
+{% if success %}
+SUCCESS
+{% else %}
+FAILURE
+{% endif %}
+
+{% else %}
+
 {{ form.begin({
 	id    : 'user_edit',
 	method: 'post'
@@ -29,3 +39,5 @@
 	{{ form.button({ label:'Save changes', type:'submit' }) }}
 
 {{ form.end() }}
+
+{% endif %}
