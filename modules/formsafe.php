@@ -45,6 +45,7 @@ on(
         $_SESSION[$name] = ' ';
         unset($_SESSION[$name]);
         if ($sess && isset($_POST[$name]) && $_POST[$name] === $sess) {
+            unset $_POST[$name];
             return true;
         } else {
             $_POST = array();
