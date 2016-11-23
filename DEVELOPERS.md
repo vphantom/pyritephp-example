@@ -67,7 +67,19 @@ If `http_status` isn't 200, you may want to display a helpful error message.  Ty
 
 For debugging purposes, `body` also has special variable `stdout` available which contains the output captured from all code that ran between `startup` and `shutdown` events.  Output by any code not using the `render` event to display templates safely ends up here.
 
-Our example code also uses `register.html` which is displayed when not logged in for any reason.
+Our example code also provides many other templates:
+
+### register.html
+
+Displayed when not logged in for any reason.
+
+### user_edit.html
+
+Tied to `/user/prefs` to edit the current user's details.
+
+### form
+
+Provides handy macros for other templates to use.  (Used for example in `user_edit.html`.)
 
 
 ## Database

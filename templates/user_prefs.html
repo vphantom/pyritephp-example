@@ -1,0 +1,31 @@
+{% import 'form' as form %}
+
+<h1>Preferences</h1>
+
+{{ form.begin({
+	id    : 'user_edit',
+	method: 'post'
+}) }}
+
+	{{ form.input({
+		label    : 'Name',
+		type     : 'text',
+		id       : 'name',
+		value    : session.USER_INFO.name,
+		required : null,
+		minlength: 2,
+		maxlength: 100
+	}) }}
+
+	{{ form.input({
+		label    : 'E-mail',
+		type     : 'email',
+		id       : 'email',
+		value    : session.USER_INFO.email,
+		required : null,
+		maxlength: 100
+	}) }}
+
+	{{ form.button({ label:'Save changes', type:'submit' }) }}
+
+{{ form.end() }}
