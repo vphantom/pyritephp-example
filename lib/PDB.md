@@ -51,7 +51,7 @@ Typically `INSERT`, `UPDATE`, `DELETE`.
 * `$q` — `string` — SQL query with '?' value placeholders
 * `$args` — `array` — (Optional) List of values corresponding to placeholders
 
-**Returns:** `int` — Number of affected rows, false on error
+**Returns:** `mixed` — Number of affected rows, false on error
 
 
 ### lastInsertId()
@@ -60,7 +60,33 @@ Fetch last `INSERT`/`UPDATE` auto_increment ID
 
 This is a shortcut to the API value, to avoid performing a `SELECT LAST_INSERT_ID()` round-trip manually.
 
-**Returns:** `string` — Last ID if supported/available
+**Returns:** `string` — Last inserted ID if supported/available
+
+
+### insert(*$table*, *$values*)
+
+Execute INSERT statement with variable associative column data
+
+Note that the first time a table is referenced with insert() or update(), its list of columns will be fetched from the database to create a whitelist.  It is thus safe to pass a form result directly to $values.
+
+* `$table` — `string` — Name of table to update
+* `$values` — `array` — Associative list of columns/values to set
+
+**Returns:** `mixed` New ID if supported/available, false on failure
+
+
+### update(*$table*, *$values*, *$tail*, *$tailArgs* = array())
+
+Execute UPDATE statement with variable associative column data
+
+Note that the first time a table is referenced with insert() or update(), its list of columns will be fetched from the database to create a whitelist.  It is thus safe to pass a form result directly to $values.
+
+* `$table` — `string` — Name of table to update
+* `$values` — `array` — Associative list of columns/values to set
+* `$tail` — `string` — Final part of SQL query (i.e. a WHERE clause)
+* `$tailArgs` — `array` — (Optional) List of values corresponding to placeholders in $tail
+
+**Returns:** `mixed` Number of affected rows, false on error
 
 
 ### selectAtom(*$q*, *$args* = array())

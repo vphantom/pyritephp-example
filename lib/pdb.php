@@ -31,6 +31,7 @@ class PDB
     private $_dbh;
     private $_sth;
     private $_err;
+    private $_tables;
 
     /**
      * Constructor
@@ -43,6 +44,7 @@ class PDB
      */
     public function __construct($dsn, $user = null, $pass = null)
     {
+        $this->_tables = array();
         $this->_err = null;
         $this->_sth = null;
         $this->_dbh = new PDO($dsn, $user, $pass);  // Letting PDOException bubble up
@@ -82,6 +84,33 @@ class PDB
     }
 
     /**
+     * Get list of column names for a table
+     *
+     * Cached in $this to minimize I/O
+     *
+     * @param string $table Name of table to inspect
+     *
+     * @return array List of column names, false on failure
+     */
+    private function _getColumns($table)
+    {
+        if (isset($this->_tables[$table])) {
+            return $this->_tables[$table];
+        };
+        $this->_tables[$table] = false;
+        if ($rows = $this->selectArray("PRAGMA table_info({$table})")) {
+            $cols = array();
+            foreach ($rows as $row) {
+                $cols[] = $row['name'];
+            };
+            if (count($cols) > 0) {
+                $this->_tables[$table] = $cols;
+            };
+        };
+        return $this->_tables[$table];
+    }
+
+    /**
      * Prepare a statement
      *
      * @param string $q SQL query with '?' value placeholders
@@ -90,9 +119,7 @@ class PDB
      */
     private function _prepare($q)
     {
-        if ($this->_err) {
-            return $this;
-        };
+        $this->_err = null;
         if (!$this->_sth = $this->_dbh->prepare($q)) {
             $this->_err = implode(' ', $this->_dbh->errorInfo());
         };
@@ -129,7 +156,7 @@ class PDB
      * @param string $q    SQL query with '?' value placeholders
      * @param array  $args (Optional) List of values corresponding to placeholders
      *
-     * @return int Number of affected rows, false on error
+     * @return mixed Number of affected rows, false on error
      */
     public function exec($q, $args = array())
     {
@@ -143,11 +170,98 @@ class PDB
      * This is a shortcut to the API value, to avoid performing a SELECT
      * LAST_INSERT_ID() round-trip manually.
      *
-     * @return string Last ID if supported/available
+     * @return string Last inserted ID if supported/available
      */
     public function lastInsertId()
     {
-        return $this->dbh->lastInsertId();
+        return $this->_dbh->lastInsertId();
+    }
+
+    /**
+     * Fetch last error explanation, if any
+     *
+     * @return string Last error if there is one, null otherwise
+     */
+    public function lastError()
+    {
+        return $this->_err ? $this->_err : null;
+    }
+
+    /**
+     * Execute INSERT statement with variable associative column data
+     *
+     * Note that the first time a table is referenced with insert() or
+     * update(), its list of columns will be fetched from the database to
+     * create a whitelist.  It is thus safe to pass a form result directly to
+     * $values.
+     *
+     * @param string $table  Name of table to update
+     * @param array  $values Associative list of columns/values to set
+     *
+     * @return mixed New ID if supported/available, false on failure
+     */
+    public function insert($table, $values)
+    {
+        $colOK = $this->_getColumns($table);
+        $query = 'INSERT INTO ' . $table . ' (';
+        $queryArgs = array();
+        $colQs = array();
+        $cols = array();
+        if (is_array($values)) {
+            foreach ($values as $key => $val) {
+                if (in_array($key, $colOK)) {
+                    $cols[] = $key;
+                    $colQs[] = '?';
+                    $queryArgs[] = $val;
+                };
+            };
+        };
+        $query .= implode(', ', $cols) . ') VALUES (' . implode(', ', $colQs) . ')';
+        return
+            $this->_prepare($query)->_execute($queryArgs)
+            ? $this->_dbh->lastInsertId()
+            : false
+        ;
+    }
+
+    /**
+     * Execute UPDATE statement with variable associative column data
+     *
+     * Note that the first time a table is referenced with insert() or
+     * update(), its list of columns will be fetched from the database to
+     * create a whitelist.  It is thus safe to pass a form result directly to
+     * $values.
+     *
+     * @param string $table    Name of table to update
+     * @param array  $values   Associative list of columns/values to set
+     * @param string $tail     Final part of SQL query (i.e. a WHERE clause)
+     * @param array  $tailArgs (Optional) List of values corresponding to placeholders in $tail
+     *
+     * @return mixed Last ID if supported/available, false on failure
+     */
+    public function update($table, $values, $tail, $tailArgs = array())
+    {
+        $colOK = $this->_getColumns($table);
+        $query = 'UPDATE ' . $table . ' SET ';
+        $queryArgs = array();
+        $cols = array();
+        if (is_array($values)) {
+            foreach ($values as $key => $val) {
+                if (in_array($key, $colOK)) {
+                    $cols[] = "{$key}=?";
+                    $queryArgs[] = $val;
+                };
+            };
+        };
+        $query .= implode(', ', $cols) . ' ' . $tail;
+        foreach ($tailArgs as $arg) {
+            $queryArgs[] = $arg;  // Faster than array_merge(), which copies
+        };
+        return
+            $this->_prepare($query)->_execute($queryArgs)
+            ? $this->_sth->rowCount()
+            : false
+        ;
     }
 
     /**
