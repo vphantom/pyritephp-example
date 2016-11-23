@@ -24,6 +24,7 @@
     "clean-css": "^3.4.20",
     "eslint": "^3.9.1",
     "jquery": "^2.2.4",
+    "parsleyjs": "^2.6.0",
     "uglify-js": "^2.7.4"
   }
 }
