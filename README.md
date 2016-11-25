@@ -1,6 +1,6 @@
 # PyritePHP
 
-PHP/Bootstrap boilerplate framework to kick-start web application development
+PHP/Bootstrap framework to kick-start multilingual web application development
 
 Simple event-driven framework for creating PHP 5 applications backed by a PDO database and with a Twitter Bootstrap user interface.
 
