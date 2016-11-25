@@ -69,5 +69,3 @@ Router::run();
 
 // Shut down
 trigger('shutdown');
-
-?>
