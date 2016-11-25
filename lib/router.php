@@ -1,10 +1,47 @@
 <?php
 
-class Router {
+/**
+ * URL Router
+ *
+ * PHP version 5
+ *
+ * @category  Library
+ * @package   PyritePHP
+ * @author    Stéphane Lavergne <lis@imars.com>
+ * @copyright 2016 Stéphane Lavergne
+ * @license   https://opensource.org/licenses/MIT  MIT
+ * @link      https://github.com/vphantom/pyrite-php
+ */
+
+/**
+ * Router class
+ *
+ * PHP version 5
+ *
+ * @category  Library
+ * @package   PyritePHP
+ * @author    Stéphane Lavergne <lis@imars.com>
+ * @copyright 2016 Stéphane Lavergne
+ * @license   https://opensource.org/licenses/MIT  MIT
+ * @link      https://github.com/vphantom/pyrite-php
+ */
+class Router
+{
     private static $_base = null;
     private static $_PATH = array();
 
-    public static function startup() {
+    /**
+     * Build route from requested URL
+     *
+     * - Extract language from initial '/xx/'
+     * - Build route/foo+bar if handled, route/foo otherwise
+     * - Default to route/main
+     * - Trigger 404 status if not handled at all
+     *
+     * @return null
+     */
+    public static function startup()
+    {
         self::$_PATH = explode('/', $_SERVER['PATH_INFO']);
         while (count(self::$_PATH) > 0 && self::$_PATH[0] === '') {
             array_shift(self::$_PATH);
@@ -32,7 +69,13 @@ class Router {
         };
     }
 
-    public static function run() {
+    /**
+     * Trigger handler for current route
+     *
+     * @return null
+     */
+    public static function run()
+    {
         if (self::$_base !== null  &&  !pass('route/' . self::$_base, self::$_PATH)) {
             trigger('http_status', 500);
         };
@@ -40,5 +83,3 @@ class Router {
 }
 
 on('startup', 'Router::startup', 50);
-
-?>
