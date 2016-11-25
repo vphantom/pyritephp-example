@@ -114,6 +114,18 @@ class Session
     {
         $_SESSION['USER_INFO'] = $data;
     }
+
+    /**
+     * Set a language code in session
+     *
+     * @param string $code Language code
+     *
+     * @return null
+     */
+    public static function setLang($code)
+    {
+        $_SESSION['lang'] = $code;
+    }
 }
 
 on('startup', 'Session::startup', 1);
@@ -121,3 +133,4 @@ on('shutdown', 'Session::shutdown', 99);
 on('login', 'Session::login', 1);
 on('logout', 'Session::reset', 1);
 on('user_changed', 'Session::reloadUser', 1);
+on('lang_changed', 'Session::setLang');

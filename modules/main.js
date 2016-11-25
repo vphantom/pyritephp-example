@@ -4,12 +4,17 @@ var $ = global.jQuery = require('jquery');
 var bootstrap = require('bootstrap');  // eslint-disable-line no-unused-vars
 var parsley = require('parsleyjs');  // eslint-disable-line no-unused-vars
 
-// Add non-English locales to Parsley
+// Add all useful non-English locales to Parsley
+// (This is necessary so that Browserify bundles them all at build time.)
 // require('parsleyjs/dist/i18n/fr');
-// Use one of the locales right now instead of the last loaded
-// parsley.setLocale('fr');
 
 $().ready(function() {
+  // Get language code from HTML tag
+  var lang = $('html').attr('lang') || 'en';
+
+  // Set parsley to found language instead of last loaded
+  parsley.setLocale(lang);
+
   // Integrate Parsley with Twitter Bootstrap
   // Initially inspired by https://gist.github.com/askehansen/6809825
   // ...and http://jimmybonney.com/articles/parsley_js_twitter_bootstrap/
