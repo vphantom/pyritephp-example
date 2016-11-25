@@ -31,6 +31,7 @@ class Twigger
     private static $_template;
     private static $_safeBody = '';
     private static $_redirect = false;
+    private static $_lang = 'en';
 
     /**
      * Initialize wrapper around Twig templating and display headers
@@ -39,8 +40,26 @@ class Twigger
      */
     public static function startup()
     {
+        $tplBase = __DIR__ . '/../templates';
+        $twigLoader = new \Twig_Loader_Filesystem();
+
+        // Don't choke if language from URL is bogus
+        try {
+            $twigLoader->addPath($tplBase . '/' . self::$_lang);
+        } catch (Exception $e) {
+        };
+
+        // Be nice, don't even choke if templates aren't sorted by language
+        if (self::$_lang !== 'en') {
+            try {
+                $twigLoader->addPath($tplBase . '/en');
+            } catch (Exception $e) {
+            };
+        };
+
+        $twigLoader->addPath($tplBase);
         $twig = new \Twig_Environment(
-            new \Twig_Loader_Filesystem(__DIR__ . '/../templates'),
+            $twigLoader,
             array(
                 // 'cache' => __DIR__ . '/var/twig_cache',
                 'autoescape' => true,
@@ -109,6 +128,18 @@ class Twigger
     }
 
     /**
+     * Set current language
+     *
+     * @param string $code Two-letter language code
+     *
+     * @return null
+     */
+    public static function setLang($code)
+    {
+        self::$_lang = $code;
+    }
+
+    /**
      * Set HTTP response status code
      *
      * @param int $code New code (between 100 and 599)
@@ -150,7 +181,7 @@ class Twigger
     /**
      * Render a template file
      *
-     * @param string $name File name from within templates/
+     * @param string $name File name from within templates/ without extension
      * @param array  $args Associative array of variables to pass along
      *
      * @return null
@@ -176,3 +207,4 @@ on('render', 'Twigger::render');
 on('title', 'Twigger::title');
 on('http_status', 'Twigger::status');
 on('http_redirect', 'Twigger::redirect');
+on('lang_changed', 'Twigger::setLang');

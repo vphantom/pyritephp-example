@@ -10,6 +10,13 @@ class Router {
             array_shift(self::$_PATH);
         };
 
+        // Eat up initial directory as language if it's 2 characters
+        $lang = 'en';
+        if (isset(self::$_PATH[0]) && strlen(self::$_PATH[0]) === 2) {
+            $lang = strtolower(array_shift(self::$_PATH));
+        };
+        trigger('lang_changed', $lang);
+
         if (isset(self::$_PATH[1]) && listeners('route/' . self::$_PATH[0] . '+' . self::$_PATH[1])) {
             self::$_base = array_shift(self::$_PATH) . '+' . array_shift(self::$_PATH);
         } elseif (isset(self::$_PATH[0])) {

@@ -41,6 +41,8 @@ All templates have variables `session` and `post` equivalent to `$_SESSION` and 
 
 Most templates have `http_status` which is an integer between 100 and 599 as well as `http_redirect` which is either false or a URL to refresh to (typically via META tags in `layout.html`).
 
+Templates are located in `templates/xx/` where `xx` is a lowercase language code such as `en` for English.  Note that if a template doesn't exist in the current language as discovered by the router (see *Router* below), its English version will be used.  For convenience, if its English version also doesn't exist, it will be looked for directly in `templates/`.  Utility templates are always located directly in `templates/` and typically don't have the `.html` extension seen on regular templates.
+
 A single template file is mandatory: `layout.html` which is divided into three blocks:
 
 ### head
@@ -118,6 +120,8 @@ on('route/mystuff+delete', 'MyClass::myDeleteMethod');
 When an empty or root URL is processed, the route will resolve to `main`, therefore to event `route/main`.
 
 Any URL not resolvable to an event handler will yield an HTTP 404 error.
+
+**Note:** A root-level route 2 characters long is removed from the path and used as a language code.  Therefore, if you specify a handler for a 2-character path, it will match on the *second* level of any URL: `/aa/bb/cc` would set the language to `aa` (for templating) and trigger `route/bb+cc`.
 
 
 ## Events
@@ -199,7 +203,7 @@ Prepends `$prepend` to the current title to be displayed.  If the title wasn't e
 
 #### render (*$template*[, *$args[]*])
 
-Render the named `$template` with optional supplied associative `$args[]`.
+Render the named `$template` with optional supplied associative `$args[]`.  See *Templating* above for the location of template files.
 
 
 ### Form Events
