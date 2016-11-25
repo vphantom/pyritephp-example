@@ -37,11 +37,15 @@ Then, running `make distrib` any time will rebuild `client.css[.gz]` and `client
 
 ## Templating
 
-All templates have variables `session` and `post` equivalent to `$_SESSION` and `$_POST`, as well as `grab()`, `pass()` and `filter()` from the PHP side.
+All templates have variables `session` and `post` equivalent to `$_SESSION` and `$_POST`, as well as `grab()`, `pass()` and `filter()` from the PHP side.  Of interest is `session.base` which contains either `/xx` where `xx` is the current language, or is empty if the current language is English.  Hyperlinks for dynamic content should thus be constructed like:
+
+```html
+<a href="{{ session.base }}/foo">foo</a>
+```
 
 Most templates have `http_status` which is an integer between 100 and 599 as well as `http_redirect` which is either false or a URL to refresh to (typically via META tags in `layout.html`).
 
-Templates are located in `templates/xx/` where `xx` is a lowercase language code such as `en` for English.  Note that if a template doesn't exist in the current language as discovered by the router (see *Router* below), its English version will be used.  For convenience, if its English version also doesn't exist, it will be looked for directly in `templates/`.
+Templates are located in `templates/xx/` where `xx` is a lowercase language code such as `en` for English.  Note that if a template doesn't exist in the current language as discovered by the router (see *Router* below), its English version will be used.  For convenience, if its explicitly English version also doesn't exist, it will be looked for directly in `templates/`.
 
 Utility templates which are located in `templates/lib/` are loaded automatically and available globally.  For example, our included `templates/lib/form` defines macros such as `input()` available as `form.input()`.
 

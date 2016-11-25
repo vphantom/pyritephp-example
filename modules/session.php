@@ -118,6 +118,9 @@ class Session
     /**
      * Set a language code in session
      *
+     * Also sets $_SESSION['base'] which contains either '/xx' or '' depending
+     * on whether the current language is English or other.
+     *
      * @param string $code Language code
      *
      * @return null
@@ -125,6 +128,7 @@ class Session
     public static function setLang($code)
     {
         $_SESSION['lang'] = $code;
+        $_SESSION['base'] = ($code === 'en' ? '' : "/{$code}");
     }
 }
 
