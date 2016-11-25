@@ -42,7 +42,7 @@ class Router
      */
     public static function startup()
     {
-        self::$_PATH = explode('/', $_SERVER['PATH_INFO']);
+        self::$_PATH = explode('/', trim($_SERVER['PATH_INFO'], '/'));
         while (count(self::$_PATH) > 0 && self::$_PATH[0] === '') {
             array_shift(self::$_PATH);
         };
