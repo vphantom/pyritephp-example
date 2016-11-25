@@ -86,7 +86,18 @@ class Twigger
                 }
             )
         );
+
+        if ($dh = opendir($tplBase . '/lib/')) {
+            while (($global = readdir($dh)) !== false) {
+                if ($global[0] !== '.') {
+                    $twig->addGlobal($global, $twig->loadTemplate('lib/' . $global));
+                };
+            };
+            closedir($dh);
+        };
+
         self::$_twig = $twig;
+
         self::$_template = $twig->loadTemplate('layout.html');
 
         if (self::$_status !== 200) {
