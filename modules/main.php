@@ -48,6 +48,7 @@ on(
 on(
     'route/login',
     function () {
+        $req = grab('request');
         if (!pass('form_validate', 'login-form')) {
             trigger('http_status', 440);
             trigger('render', 'register.html');
@@ -58,15 +59,16 @@ on(
             trigger('render', 'register.html', array('try_again' => true));
             return;
         };
-        trigger('http_redirect', '/');
+        trigger('http_redirect', $req['base'] . '/');
     }
 );
 
 on(
     'route/logout',
     function () {
+        $req = grab('request');
         trigger('logout');
-        trigger('http_redirect', '/');
+        trigger('http_redirect', $req['base'] . '/');
     }
 );
 

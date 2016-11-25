@@ -1,6 +1,6 @@
 {% block head %}
 <!DOCTYPE html>
-<html lang="{{ session.lang }}">
+<html lang="{{ req.lang }}">
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,8 +13,8 @@
 
 
 {% block body %}
-		{% if http_redirect %}
-		<meta http-equiv="refresh" content="0; url={{ http_redirect }}">
+		{% if req.redirect %}
+		<meta http-equiv="refresh" content="0; url={{ req.redirect }}">
 		{% endif %}
 		<title>{{ title }}</title>
 	</head>
@@ -28,22 +28,31 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="{{ session.base }}/">PyritePHP</a>
+					<a class="navbar-brand" href="{{ req.base }}/">PyritePHP</a>
 				</div>
 				<div id="navbar" class="navbar-collapse collapse">
+					<ul class="nav navbar-nav navbar-right">
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ req.lang }} <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="/{{ req.path }}{{ req.query }}">English</a></li>
+								<li><a href="/fr/{{ req.path }}{{ req.query }}">Français</a></li>
+							</ul>
+						</li>
+					</ul>
 					{% if session.identified %}
 					<ul class="nav navbar-nav navbar-right">
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ session.user.name }} <span class="caret"></span></a>
 							<ul class="dropdown-menu">
 								<li class="dropdown-header">{{ session.user.email }}</li>
-								<li><a href="{{ session.base }}/user/prefs">Preferences</a></li>
-								<li><a href="{{ session.base }}/logout">Sign out</a></li>
+								<li><a href="{{ req.base }}/user/prefs">Preferences</a></li>
+								<li><a href="{{ req.base }}/logout">Sign out</a></li>
 							</ul>
 						</li>
 					</ul>
 					{% else %}
-					<form class="navbar-form navbar-right" method="post" action="{{ session.base }}/login" id="login-form">
+					<form class="navbar-form navbar-right" method="post" action="{{ req.base }}/login" id="login-form">
 						{{ filter('form_begin', 'login-form') |raw }}
 						<div class="form-group">
 							<input type="email" name="email" placeholder="E-Mail" value="{{ post.email }}" class="form-control" required>
@@ -73,7 +82,7 @@
 				<div class="container main">
 		{% endif %}
 
-			{% if http_status == 404 %}
+			{% if req.status == 404 %}
 				<div class="jumbotron">
 					<h1>Not Found</h1>
 					<p>This resource cannot be found at the moment.  You might want to go back one page from here.</p>

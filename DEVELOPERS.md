@@ -37,13 +37,51 @@ Then, running `make distrib` any time will rebuild `client.css[.gz]` and `client
 
 ## Templating
 
-All templates have variables `session` and `post` equivalent to `$_SESSION` and `$_POST`, as well as `grab()`, `pass()` and `filter()` from the PHP side.  Of interest is `session.base` which contains either `/xx` where `xx` is the current language, or is empty if the current language is English.  Hyperlinks for dynamic content should thus be constructed like:
+All templates have variables `session` and `post` equivalent to `$_SESSION` and `$_POST`, as well as `grab()`, `pass()` and `filter()` from the PHP side and the special variable `req` with details about the current request.
+
+### Common variables
+
+#### session.user
+
+Associative array of the user's information, if one is logged in.
+
+#### session.identified
+
+Boolean describing whether a user is currently logged in.
+
+#### req.lang
+
+Current 2-letter lowercase language code.
+
+#### req.base
+
+Either '' or '/xx' where `xx` is the current lowercase language code.  Therefore, all your templates' URLs for dynamic content should use the form:
 
 ```html
-<a href="{{ session.base }}/foo">foo</a>
+<a href="{{ req.base }}/foo">foo</a>
 ```
 
-Most templates have `http_status` which is an integer between 100 and 599 as well as `http_redirect` which is either false or a URL to refresh to (typically via META tags in `layout.html`).
+#### req.path
+
+Path to the current page without leading nor trailing slashes.  This is the entire `PATH_INFO`, excluding the language prefix if applicable.
+
+#### req.query
+
+Current query string, including leading '?'.  Since forms should normally use the POST method, GET queries should be considered like ordinary dynamic content.  Thus the full link to the current page should normally be:
+
+```html
+<a href="{{ req.base }}/{{ req.path }}{{ req.query }}">...</a>
+```
+
+#### req.status
+
+An integer between 100 and 599.
+
+#### req.redirect
+
+Either false or a URL to refresh to (typically via META tags in `layout.html`).
+
+### Template Files
 
 Templates are located in `templates/xx/` where `xx` is a lowercase language code such as `en` for English.  Note that if a template doesn't exist in the current language as discovered by the router (see *Router* below), its English version will be used.  For convenience, if its explicitly English version also doesn't exist, it will be looked for directly in `templates/`.
 
@@ -55,15 +93,15 @@ A single template file is mandatory: `layout.html` which is divided into three b
 
 Displayed and flushed to the browser as early as possible.  Should reference resources and *not* include a TITLE tag yet.
 
-Variables available: `session`, `http_status`
+Variables available: `session`, `req`
 
 ### body
 
 If processing the request was successful, during event `shutdown` this is displayed for the rest of the document, including TITLE, closing HEAD, etc.  As `body` is partial HTML, it should be filtered with `|raw` in the template to avoid escaping.
 
-Variables available: `session`, `http_status`, `http_redirect`, `title`, `body`, `stdout`
+Variables available: `session`, `req`, `title`, `body`, `stdout`
 
-If `http_status` isn't 200, you may want to display a helpful error message.  Typical codes:
+If `req.status` isn't 200, you may want to display a helpful error message.  Typical codes:
 
 **403** When the user needs to be logged in, but isn't.  (Not 401 to avoid native browser password prompt.)
 
@@ -96,8 +134,6 @@ Global variable `$db` is available with an instance of the `PDB` wrapper to `PDO
 
 
 ## User
-
-An associative array of the current user's information, if one is logged in, is available as `$_SESSION['user']`.  A convenience boolean `$_SESSION['identified']` also indicates if a user is currently identified.
 
 Note that the first three columns defined in our example `modules/user.php` should remain intact: we need a unique ID and we expect to identify users by e-mail address and password, which itself is stored as a one-way hash in the database.
 

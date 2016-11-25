@@ -30,7 +30,6 @@ class Twigger
     private static $_status = 200;
     private static $_template;
     private static $_safeBody = '';
-    private static $_redirect = false;
     private static $_lang = 'en';
 
     /**
@@ -106,8 +105,8 @@ class Twigger
         echo self::$_template->renderBlock(
             'head',
             array(
-                'http_status' => self::$_status,
                 'session' => $_SESSION,
+                'req' => grab('request'),
                 'post' => $_POST
             )
         );
@@ -127,12 +126,11 @@ class Twigger
         echo self::$_template->renderBlock(
             'body',
             array(
-                'http_status' => self::$_status,
-                'http_redirect' => self::$_redirect,
                 'title' => self::$_title,
                 'body' => self::$_safeBody,
                 'stdout' => $body,
                 'session' => $_SESSION,
+                'req' => grab('request'),
                 'post' => $_POST
             )
         );
@@ -165,18 +163,6 @@ class Twigger
     }
 
     /**
-     * Ask layout template for a META redirect
-     *
-     * @param string $url The new location (can be relative)
-     *
-     * @return null
-     */
-    public static function redirect($url)
-    {
-        self::$_redirect = $url;
-    }
-
-    /**
      * Prepend new section to page title
      *
      * @param string $prepend New section of title text
@@ -201,10 +187,9 @@ class Twigger
     {
         $env = array_merge(
             $args, array(
-                'http_status' => self::$_status,
-                'http_redirect' => self::$_redirect,
                 'title' => self::$_title,
                 'session' => $_SESSION,
+                'req' => grab('request'),
                 'post' => $_POST
             )
         );
@@ -217,5 +202,4 @@ on('shutdown', 'Twigger::shutdown', 1);
 on('render', 'Twigger::render');
 on('title', 'Twigger::title');
 on('http_status', 'Twigger::status');
-on('http_redirect', 'Twigger::redirect');
-on('lang_changed', 'Twigger::setLang');
+on('language', 'Twigger::setLang');

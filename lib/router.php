@@ -29,6 +29,7 @@ class Router
 {
     private static $_base = null;
     private static $_PATH = array();
+    private static $_req = array();
 
     /**
      * Build route from requested URL
@@ -42,6 +43,9 @@ class Router
      */
     public static function startup()
     {
+        self::$_req['status'] = 200;
+        self::$_req['redirect'] = false;
+
         self::$_PATH = explode('/', trim($_SERVER['PATH_INFO'], '/'));
         while (count(self::$_PATH) > 0 && self::$_PATH[0] === '') {
             array_shift(self::$_PATH);
@@ -52,7 +56,11 @@ class Router
         if (isset(self::$_PATH[0]) && strlen(self::$_PATH[0]) === 2) {
             $lang = strtolower(array_shift(self::$_PATH));
         };
-        trigger('lang_changed', $lang);
+        self::$_req['lang'] = $lang;
+        self::$_req['base'] = ($lang === 'en' ? '' : "/{$lang}");
+        self::$_req['path'] = implode('/', self::$_PATH);
+        self::$_req['query'] = ($_SERVER['QUERY_STRING'] !== '' ? '?' . $_SERVER['QUERY_STRING'] : '');
+        trigger('language', $lang);
 
         if (isset(self::$_PATH[1]) && listeners('route/' . self::$_PATH[0] . '+' . self::$_PATH[1])) {
             self::$_base = array_shift(self::$_PATH) . '+' . array_shift(self::$_PATH);
@@ -80,6 +88,57 @@ class Router
             trigger('http_status', 500);
         };
     }
+
+    /**
+     * Return request data
+     *
+     * Keys provided:
+     *
+     * lang: Current language code
+     * base: Prepend this before '/' to get an absolute URL for current language
+     * path: Current component's URL
+     * query: GET query string, if any
+     * status: Integer of current HTTP status
+     * redirect: False or string intended for URL redirection
+     *
+     * @return array Associative data
+     */
+    public static function getRequest()
+    {
+        return self::$_req;
+    }
+
+    /**
+     * Set HTTP response status code
+     *
+     * @param int $code New code (between 100 and 599)
+     *
+     * @return null
+     */
+    public static function setStatus($code)
+    {
+        if ($code >= 100  &&  $code < 600) {
+            self::$_req['status'] = $code;
+        };
+    }
+
+    /**
+     * Set HTTP redirect URL
+     *
+     * This only sets req.redirect: it is up to other components or templates
+     * to act upon it.
+     *
+     * @param string $url The new location (can be relative)
+     *
+     * @return null
+     */
+    public static function setRedirect($url)
+    {
+        self::$_req['redirect'] = $url;
+    }
 }
 
 on('startup', 'Router::startup', 50);
+on('request', 'Router::getRequest');
+on('http_status', 'Router::setStatus');
+on('http_redirect', 'Router::setRedirect');
