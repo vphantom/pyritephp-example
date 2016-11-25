@@ -24,7 +24,7 @@ namespace Main;
  */
 function isGuest()
 {
-    if (!$_SESSION['USER_OK']) {
+    if (!$_SESSION['identified']) {
         trigger('http_status', 403);
         trigger('render', 'register.html');
         return true;
@@ -35,7 +35,7 @@ function isGuest()
 on(
     'route/main',
     function () {
-        if (!$_SESSION['USER_OK']) {
+        if (!$_SESSION['identified']) {
             trigger('render', 'register.html');
             return;
         };
@@ -83,7 +83,7 @@ on(
                 return;
             };
             $saved = true;
-            $success = pass('user_update', $_SESSION['USER_INFO']['id'], $_POST);
+            $success = pass('user_update', $_SESSION['user']['id'], $_POST);
         };
 
         trigger(

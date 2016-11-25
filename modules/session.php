@@ -40,8 +40,8 @@ class Session
         ini_set('session.cookie_lifetime', 12 * 60 * 60);
         ini_set('session.cookie_httponly', true);
         session_start();
-        if (isset($_SESSION['REMOTE_ADDR'])) {
-            if ($_SESSION['REMOTE_ADDR'] !== $_SERVER['REMOTE_ADDR']) {
+        if (isset($_SESSION['ip'])) {
+            if ($_SESSION['ip'] !== $_SERVER['REMOTE_ADDR']) {
                 self::reset();
             };
         } else {
@@ -66,9 +66,9 @@ class Session
      */
     private static function _init()
     {
-        $_SESSION['REMOTE_ADDR'] = $_SERVER['REMOTE_ADDR'];
-        $_SESSION['USER_INFO'] = null;
-        $_SESSION['USER_OK'] = false;
+        $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
+        $_SESSION['user'] = null;
+        $_SESSION['identified'] = false;
     }
 
     /**
@@ -94,8 +94,8 @@ class Session
     {
         if (is_array($user = grab('authenticate', $email, $password))) {
             self::reset();
-            $_SESSION['USER_INFO'] = $user;
-            $_SESSION['USER_OK'] = true;
+            $_SESSION['user'] = $user;
+            $_SESSION['identified'] = true;
             trigger('newuser');
             return true;
         } else {
@@ -112,7 +112,7 @@ class Session
      */
     public static function reloadUser($data)
     {
-        $_SESSION['USER_INFO'] = $data;
+        $_SESSION['user'] = $data;
     }
 
     /**

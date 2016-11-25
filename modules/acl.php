@@ -129,10 +129,10 @@ class ACL
     {
         global $db;
         $_SESSION['ACL_INFO'] = null;
-        if (!array_key_exists('id', $_SESSION['USER_INFO'])) {
+        if (!array_key_exists('id', $_SESSION['user'])) {
             return;
         };
-        $userId = $_SESSION['USER_INFO']['id'];
+        $userId = $_SESSION['user']['id'];
 
         $flat = $db->selectArray(
             "
