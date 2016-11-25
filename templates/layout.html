@@ -35,8 +35,8 @@
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ req.lang }} <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a href="/{{ req.path }}{{ req.query }}">English</a></li>
-								<li><a href="/fr/{{ req.path }}{{ req.query }}">Français</a></li>
+								<li><a href="/{% if 'en' != req.default_lang %}en/{% endif %}{{ req.path }}{{ req.query }}">English</a></li>
+								<li><a href="/{% if 'fr' != req.default_lang %}fr/{% endif %}{{ req.path }}{{ req.query }}">Français</a></li>
 							</ul>
 						</li>
 					</ul>

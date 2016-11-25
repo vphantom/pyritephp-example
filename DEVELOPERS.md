@@ -53,6 +53,10 @@ Boolean describing whether a user is currently logged in.
 
 Current 2-letter lowercase language code.
 
+#### req.default_lang
+
+2-letter lowercase language code for the language configured in `index.php` to be the default for URLs not including a language code.
+
 #### req.base
 
 Either '' or '/xx' where `xx` is the current lowercase language code.  Therefore, all your templates' URLs for dynamic content should use the form:
@@ -83,7 +87,7 @@ Either false or a URL to refresh to (typically via META tags in `layout.html`).
 
 ### Template Files
 
-Templates are located in `templates/xx/` where `xx` is a lowercase language code such as `en` for English.  Note that if a template doesn't exist in the current language as discovered by the router (see *Router* below), its English version will be used.  For convenience, if its explicitly English version also doesn't exist, it will be looked for directly in `templates/`.
+Templates are located in `templates/xx/` where `xx` is a lowercase language code such as `en` for English.  Note that if a template doesn't exist in the current language as discovered by the router (see *Router* below), its version per `index.php`'s `PV_DEFAULT_LANG` will be used.  For convenience, if neither exist, it will be looked for directly in `templates/`, which keeps the structure of single-language applications simpler.
 
 Utility templates which are located in `templates/lib/` are loaded automatically and available globally.  For example, our included `templates/lib/form` defines macros such as `input()` available as `form.input()`.
 

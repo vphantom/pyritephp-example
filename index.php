@@ -13,6 +13,9 @@
  * @link      https://github.com/vphantom/pyrite-php
  */
 
+// Which language should be considered default on '/'
+define("PV_DEFAULT_LANG", 'en');
+
 // Load dependencies provided by Composer
 require_once __DIR__ . '/vendor/autoload.php';
 

@@ -52,12 +52,13 @@ class Router
         };
 
         // Eat up initial directory as language if it's 2 characters
-        $lang = 'en';
+        $lang = PV_DEFAULT_LANG;
         if (isset(self::$_PATH[0]) && strlen(self::$_PATH[0]) === 2) {
             $lang = strtolower(array_shift(self::$_PATH));
         };
         self::$_req['lang'] = $lang;
-        self::$_req['base'] = ($lang === 'en' ? '' : "/{$lang}");
+        self::$_req['default_lang'] = PV_DEFAULT_LANG;
+        self::$_req['base'] = ($lang === PV_DEFAULT_LANG ? '' : "/{$lang}");
         self::$_req['path'] = implode('/', self::$_PATH);
         self::$_req['query'] = ($_SERVER['QUERY_STRING'] !== '' ? '?' . $_SERVER['QUERY_STRING'] : '');
         trigger('language', $lang);
