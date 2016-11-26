@@ -28,6 +28,52 @@ class Session
 {
 
     /**
+     * Magic string to help prevent session hijacking
+     *
+     * Inspired by: https://www.mind-it.info/2012/08/01/using-browser-fingerprints-for-session-encryption/
+     *
+     * He goes further by encrypting the session using this magic string as a
+     * key, but we do not intend to store highly sensitive information in
+     * sessions, so hijack prevention without the computing cost of
+     * server-side theft prevetion seems a good compromise.
+     *
+     * @return string
+     */
+    private static function _magic()
+    {
+        // HTTP_ACCEPT_ENCODING changes on Chrome 54 between GET and POST requests
+        // HTTP_ACCEPT should change only in IE 6, so we'll tolerate it
+        $magic
+            = $_SERVER['HTTP_ACCEPT_LANGUAGE']
+            . $_SERVER['HTTP_ACCEPT']
+            . $_SERVER['HTTP_USER_AGENT']
+        ;
+
+        // Catch all possible hints of the client's IP address, not just REMOTE_ADDR
+        foreach (
+            array(
+                'HTTP_CLIENT_IP',
+                'HTTP_X_FORWARDED_FOR',
+                'HTTP_X_FORWARDED',
+                'HTTP_X_CLUSTER_CLIENT_IP',
+                'HTTP_FORWARDED_FOR',
+                'HTTP_FORWARDED',
+                'REMOTE_ADDR'
+            )
+            as $key
+        ) {
+            if (array_key_exists($key, $_SERVER)) {
+                foreach (explode(',', $_SERVER[$key]) as $ip) {
+                    if (filter_var($ip, FILTER_VALIDATE_IP)) {
+                        $magic .= $ip;
+                    };
+                };
+            };
+        };
+        return md5($magic);
+    }
+
+    /**
      * Discover and initialize session
      *
      * @return null
@@ -35,16 +81,17 @@ class Session
     public static function startup()
     {
         global $PPHP;
-        $config = $PPHP['config']['session'];
 
+        $config = $PPHP['config']['session'];
         // Start a PHP-handled session and bind it to the current remote IP address as
         // a precaution per https://www.owasp.org/index.php/PHP_Security_Cheat_Sheet
+        // We'll go one step further in _magic() and throw in User Agent details.
         ini_set('session.gc_maxlifetime', $config['gc_maxlifetime'] * 60);
         ini_set('session.cookie_lifetime', $config['cookie_lifetime'] * 60);
         ini_set('session.cookie_httponly', true);
         session_start();
-        if (isset($_SESSION['ip'])) {
-            if ($_SESSION['ip'] !== $_SERVER['REMOTE_ADDR']) {
+        if (isset($_SESSION['magic'])) {
+            if ($_SESSION['magic'] !== self::_magic()) {
                 self::reset();
             };
         } else {
@@ -69,7 +116,7 @@ class Session
      */
     private static function _init()
     {
-        $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
+        $_SESSION['magic'] = self::_magic();
         $_SESSION['user'] = null;
         $_SESSION['identified'] = false;
     }
