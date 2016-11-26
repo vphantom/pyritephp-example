@@ -101,7 +101,7 @@ Either false or a URL to refresh to (typically via META tags in `layout.html`).
 
 Templates are located in `templates/xx/` where `xx` is a lowercase language code such as `en` for English.  Note that if a template doesn't exist in the current language as discovered by the router (see *Router* below), its version per `index.php`'s `PV_DEFAULT_LANG` will be used.  For convenience, if neither exist, it will be looked for directly in `templates/`, which keeps the structure of single-language applications simpler.
 
-Utility templates which are located in `templates/lib/` are loaded automatically and available globally.
+Utility template `templates/lib` is loaded automatically and available globally as `lib`.  For example, `lib.alert()`.
 
 A single template file is mandatory: `layout.html` which is divided into three blocks:
 

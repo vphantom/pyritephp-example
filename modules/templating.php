@@ -88,14 +88,8 @@ class Twigger
             )
         );
 
-        if ($dh = opendir($tplBase . '/lib/')) {
-            while (($global = readdir($dh)) !== false) {
-                if ($global[0] !== '.') {
-                    $twig->addGlobal($global, $twig->loadTemplate('lib/' . $global));
-                };
-            };
-            closedir($dh);
-        };
+        // Load utilities globally
+        $twig->addGlobal('lib', $twig->loadTemplate('lib'));
 
         self::$_twig = $twig;
 
