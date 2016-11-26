@@ -40,6 +40,13 @@ Then, running `make distrib` any time will rebuild `client.css[.gz]` and `client
 Global associative array `$PPHP['config']` contains the parsed contents of `config.ini`.  Feel free to add your own custom sections to this file.
 
 
+## Client-side HTML injection
+
+### form.form-horizontal
+
+Given class `form-horizontal`, each of a form's inputs and buttons will become its own group, per Bootstrap 3 example layouts.  Input attribute `data-label` will fill its left-hand label.
+
+
 ## Templating
 
 All templates have variables `session` and `post` equivalent to `$_SESSION` and `$_POST`, as well as `grab()`, `pass()` and `filter()` from the PHP side and the special variable `req` with details about the current request.
@@ -94,7 +101,7 @@ Either false or a URL to refresh to (typically via META tags in `layout.html`).
 
 Templates are located in `templates/xx/` where `xx` is a lowercase language code such as `en` for English.  Note that if a template doesn't exist in the current language as discovered by the router (see *Router* below), its version per `index.php`'s `PV_DEFAULT_LANG` will be used.  For convenience, if neither exist, it will be looked for directly in `templates/`, which keeps the structure of single-language applications simpler.
 
-Utility templates which are located in `templates/lib/` are loaded automatically and available globally.  For example, our included `templates/lib/form` defines macros such as `input()` available as `form.input()`.
+Utility templates which are located in `templates/lib/` are loaded automatically and available globally.
 
 A single template file is mandatory: `layout.html` which is divided into three blocks:
 
@@ -131,10 +138,6 @@ Displayed when not logged in for any reason.
 ### user_edit.html
 
 Tied to `/user/prefs` to edit the current user's details.
-
-### form
-
-Provides handy macros for other templates to use.  (Used for example in `user_edit.html`.)
 
 
 ## Database
