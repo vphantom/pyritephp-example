@@ -34,10 +34,13 @@ class Session
      */
     public static function startup()
     {
+        global $PPHP;
+        $config = $PPHP['config']['session'];
+
         // Start a PHP-handled session and bind it to the current remote IP address as
         // a precaution per https://www.owasp.org/index.php/PHP_Security_Cheat_Sheet
-        ini_set('session.gc_maxlifetime', 12 * 60 * 60);
-        ini_set('session.cookie_lifetime', 12 * 60 * 60);
+        ini_set('session.gc_maxlifetime', $config['gc_maxlifetime'] * 60);
+        ini_set('session.cookie_lifetime', $config['cookie_lifetime'] * 60);
         ini_set('session.cookie_httponly', true);
         session_start();
         if (isset($_SESSION['ip'])) {

@@ -33,7 +33,8 @@ class AuditTrail
      */
     public static function install()
     {
-        global $db;
+        global $PPHP;
+        $db = $PPHP['db'];
         echo "    Installing log... ";
         $db->exec(
             "
@@ -77,7 +78,8 @@ class AuditTrail
      */
     public static function add($args)
     {
-        global $db;
+        global $PPHP;
+        $db = $PPHP['db'];
         $user = User::whoami();
         $db->exec(
             "

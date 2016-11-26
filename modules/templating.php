@@ -30,7 +30,7 @@ class Twigger
     private static $_status = 200;
     private static $_template;
     private static $_safeBody = '';
-    private static $_lang = PV_DEFAULT_LANG;
+    private static $_lang = 'en';  // Could be '', paranoid precaution
 
     /**
      * Initialize wrapper around Twig templating and display headers
@@ -39,6 +39,8 @@ class Twigger
      */
     public static function startup()
     {
+        global $PPHP;
+        self::$_lang = $PPHP['config']['global']['default_lang'];
         $tplBase = __DIR__ . '/../templates';
         $twigLoader = new \Twig_Loader_Filesystem();
 
@@ -49,9 +51,9 @@ class Twigger
         };
 
         // Be nice, don't even choke if templates aren't sorted by language
-        if (self::$_lang !== PV_DEFAULT_LANG) {
+        if (self::$_lang !== $PPHP['config']['global']['default_lang']) {
             try {
-                $twigLoader->addPath($tplBase . '/' . PV_DEFAULT_LANG);
+                $twigLoader->addPath($tplBase . '/' . $PPHP['config']['global']['default_lang']);
             } catch (Exception $e) {
             };
         };

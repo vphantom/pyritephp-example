@@ -33,7 +33,8 @@ class User
      */
     public static function install()
     {
-        global $db;
+        global $PPHP;
+        $db = $PPHP['db'];
         echo "    Installing users...\n";
         $db->exec(
             "
@@ -81,7 +82,8 @@ class User
      */
     public static function login($email, $password)
     {
-        global $db;
+        global $PPHP;
+        $db = $PPHP['db'];
 
         if ($user = $db->selectSingleArray("SELECT * FROM users WHERE email=?", array($email))) {
             if (password_verify($password, $user['passwordHash'])) {
@@ -104,7 +106,8 @@ class User
      */
     public static function update($id, $cols = array())
     {
-        global $db;
+        global $PPHP;
+        $db = $PPHP['db'];
 
         if (isset($cols['id'])) {
             unset($cols['id']);

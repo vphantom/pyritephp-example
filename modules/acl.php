@@ -33,7 +33,8 @@ class ACL
      */
     public static function install()
     {
-        global $db;
+        global $PPHP;
+        $db = $PPHP['db'];
         echo "    Installing ACL...";
 
         $db->exec(
@@ -127,7 +128,8 @@ class ACL
      */
     public static function reload()
     {
-        global $db;
+        global $PPHP;
+        $db = $PPHP['db'];
         $_SESSION['ACL_INFO'] = null;
         if (!array_key_exists('id', $_SESSION['user'])) {
             return;

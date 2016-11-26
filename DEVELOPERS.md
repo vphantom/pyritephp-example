@@ -35,6 +35,11 @@ Run `make dev-init` to initially download the requirements for the build process
 Then, running `make distrib` any time will rebuild `client.css[.gz]` and `client.js[.gz]`.
 
 
+## Configuration
+
+Global associative array `$PPHP['config']` contains the parsed contents of `config.ini`.  Feel free to add your own custom sections to this file.
+
+
 ## Templating
 
 All templates have variables `session` and `post` equivalent to `$_SESSION` and `$_POST`, as well as `grab()`, `pass()` and `filter()` from the PHP side and the special variable `req` with details about the current request.
@@ -134,7 +139,7 @@ Provides handy macros for other templates to use.  (Used for example in `user_ed
 
 ## Database
 
-Global variable `$db` is available with an instance of the `PDB` wrapper to `PDO`.  See [PDB documentation](lib/PDB.md).
+Global variable `$PPHP['db']` is available with an instance of the `PDB` wrapper to `PDO`.  See [PDB documentation](lib/PDB.md).
 
 
 ## User

@@ -13,8 +13,10 @@
  * @link      https://github.com/vphantom/pyrite-php
  */
 
-// Which language should be considered default on '/'
-define("PV_DEFAULT_LANG", 'en');
+$GLOBALS['PPHP'] = array();
+
+// Load configuration
+$PPHP['config'] = parse_ini_file('config.ini', true);
 
 // Load dependencies provided by Composer
 require_once __DIR__ . '/vendor/autoload.php';
@@ -55,7 +57,7 @@ foreach (glob(__DIR__ . '/modules/*.php') as $fname) {
 };
 
 // Database
-$GLOBALS['db'] = new PDB('sqlite:' . __DIR__ . '/var/main.db');
+$PPHP['db'] = new PDB($PPHP['config']['db']['type'] . ':' . __DIR__ . '/' . $PPHP['config']['db']['sqlite_path']);
 
 // From the command line means install mode
 if (php_sapi_name() === 'cli') {
