@@ -18,6 +18,12 @@ $GLOBALS['PPHP'] = array();
 // Load configuration
 $PPHP['config'] = parse_ini_file('config.ini', true);
 
+// Load watchdog as early as possible
+require_once 'lib/watchdog.php';
+if (array_key_exists('mail_errors_to', $PPHP['config']['global'])) {
+    $watchdog->notify($PPHP['config']['global']['mail_errors_to']);
+};
+
 // Load dependencies provided by Composer
 require_once __DIR__ . '/vendor/autoload.php';
 
