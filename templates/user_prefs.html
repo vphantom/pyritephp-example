@@ -1,14 +1,13 @@
 <h1>Preferences</h1>
 
 {% if saved %}
-
-{% if success %}
-SUCCESS
+	{% if success %}
+		{{ ui.alert(success, "Saved successfully.") }}
+	{% else %}
+		{{ ui.alert(success, "An error occurred while attempting to save.") }}
+	{% endif %}
 {% else %}
-FAILURE
-{% endif %}
 
-{% else %}
 
 {{ form.begin({
 	id    : 'user_edit',
