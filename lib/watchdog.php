@@ -122,7 +122,9 @@ class ErrorHandler
             $out .= " " . $i++ . ": "
                 . (array_key_exists('file', $point) ? $point['file'] . '#' . $point['line'] . ': ' : '')
                 . (array_key_exists('class', $point) ? $point['class'] . '::' : '')
-                . $point['function'] . "(". $this->_args($point['args']) .")\n";
+                . $point['function'] . "("
+                . (array_key_exists('args', $point) ? $this->_args($point['args']) : '')
+                . ")\n";
         }
         $out .= "\nFULL ENVIRONMENT:\n" . print_r($GLOBALS, true);
         if ($this->_email) {
