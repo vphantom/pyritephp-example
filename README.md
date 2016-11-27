@@ -4,6 +4,7 @@ PHP/Bootstrap framework to kick-start multilingual web application development
 
 Simple event-driven framework for creating PHP 5 applications backed by a PDO database and with a Twitter Bootstrap user interface.  Emphasis has been given on security:
 
+* SQL queries use placeholders, of course, and a whitelist for column names;
 * User passwords are saved in cryptographically secure hash form in the database;
 * Twig templating has escaping enabled globally by default;
 * Sessions are tied to the browser's IP address and fingerprint to reduce the risk of hijacking;
