@@ -36,6 +36,8 @@ class AuditTrail
         global $PPHP;
         $db = $PPHP['db'];
         echo "    Installing log... ";
+
+        $db->begin();
         $db->exec(
             "
             CREATE TABLE IF NOT EXISTS 'transactions' (
@@ -51,6 +53,7 @@ class AuditTrail
             )
             "
         );
+        $db->commit();
         echo "    done!\n";
     }
 

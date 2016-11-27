@@ -37,6 +37,8 @@ class ACL
         $db = $PPHP['db'];
         echo "    Installing ACL...";
 
+        $db->begin();
+
         $db->exec(
             "
             CREATE TABLE IF NOT EXISTS 'acl_roles' (
@@ -91,6 +93,8 @@ class ACL
         if (!$db->selectAtom("SELECT userId FROM users_roles WHERE userId='1' AND role='admin'")) {
             $db->exec("INSERT INTO users_roles VALUES ('1', 'admin')");
         };
+
+        $db->commit();
         echo "    done!\n";
     }
 

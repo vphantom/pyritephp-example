@@ -36,13 +36,14 @@ class User
         global $PPHP;
         $db = $PPHP['db'];
         echo "    Installing users...\n";
+        $db->begin();
         $db->exec(
             "
             CREATE TABLE IF NOT EXISTS 'users' (
                 id           INTEGER PRIMARY KEY AUTOINCREMENT,
-                email        VARCHAR(255),
-                passwordHash VARCHAR(255),
-                name         VARCHAR(255)
+                email        VARCHAR(255) NOT NULL DEFAULT '',
+                passwordHash VARCHAR(255) NOT NULL DEFAULT '',
+                name         VARCHAR(255) NOT NULL DEFAULT ''
             )
             "
         );
@@ -60,15 +61,19 @@ class User
             };
             $db->exec(
                 "
-                INSERT INTO users VALUES
-                (1, ?, ?, 'Administrator')
+                INSERT INTO users
+                (id, email, passwordHash, name)
+                VALUES
+                (1, ?, ?, ?)
                 ",
                 array(
                     $email,
-                    password_hash($pass1, PASSWORD_DEFAULT)
+                    password_hash($pass1, PASSWORD_DEFAULT),
+                    'Administrator'
                 )
             );
         };
+        $db->commit();
         echo "    done!\n";
     }
 
