@@ -4,6 +4,10 @@ body {
 	padding-top: 70px;
 }
 
+.panel-heading {
+	font-weight: bold;
+}
+
 /* Left menu */
 .nav-sidebar {
 	margin: 0 -21px 20px -20px;
