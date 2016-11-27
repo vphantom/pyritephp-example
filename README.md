@@ -2,7 +2,15 @@
 
 PHP/Bootstrap framework to kick-start multilingual web application development
 
-Simple event-driven framework for creating PHP 5 applications backed by a PDO database and with a Twitter Bootstrap user interface.
+Simple event-driven framework for creating PHP 5 applications backed by a PDO database and with a Twitter Bootstrap user interface.  Emphasis has been given on security:
+
+* User passwords are saved in cryptographically secure hash form in the database;
+* Twig templating has escaping enabled globally by default;
+* Sessions are tied to the browser's IP address and fingerprint to reduce the risk of hijacking;
+* Form displays are tied to the current session to elimiate duplicate submissions and further reduce the risks associated with session hijacking and scripted attacks;
+* New users require e-mail confirmation to become active;
+* E-mail and password changes require password re-entry and trigger e-mail notifications;
+* Covering 98% of users, forms are validated client-side to improve responsiveness.
 
 Just use this repo as your starting point, modify this file and the contents of `modules/` and `templates/` to suit your needs.  The rest of the developer documentation can be found in [Developers](DEVELOPERS.md).
 

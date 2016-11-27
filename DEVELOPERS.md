@@ -285,11 +285,13 @@ Load `$template` with optional supplied associative `$args[]`, then renders each
 
 ### Form Events
 
-These events require the `$form_name` argument be supplied, which should be unique to the entire application, possibly matching the form's HTML `ID`.
+**YOU SHOULD USE THESE ON ABSOLUTELY EVERY FORM!**
+
+These events require the `$form_name` argument be supplied, which should be unique to the entire application, possibly matching the form's HTML `ID`.  Combined, they guarantee that each form displayed will be submitted at most one single time and that they will not be submitted outside of a valid session.
 
 #### form_begin (*$form_name*)
 
-Generate unique form ID to guarantee one-time validity which expires with the current session.  Should be triggered with `grab()` within templates at the beginning of HTML `FORM` blocks.
+Generate unique form ID to guarantee one-time validity which expires with the current session.  Should be triggered with `grab()` within templates at the beginning of HTML `FORM` blocks, with `|raw` filtering as this outputs a hidden `INPUT`.
 
 #### form_validate (*$form_name*)
 
