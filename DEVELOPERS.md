@@ -93,6 +93,10 @@ Current query string, including leading '?'.  Since forms should normally use th
 
 The server's host name (and possibly port number) as found in the request's `Host` header.
 
+#### req.protocol
+
+Either `http` or `https` based on the status reported in `req.ssl` (below).
+
 #### req.ssl
 
 True if current request appears to have been served using HTTPS.  (This uses various HTTP headers in addition to PHP's `$_SERVER['HTTPS']` which can not always be relied upon.)

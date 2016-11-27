@@ -74,6 +74,7 @@ class Router
                 ||
                 (isset($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on')
             );
+        self::$_req['protocol'] = (self::$_req['ssl'] ? 'https' : 'http');
         trigger('language', $lang);
 
         if (isset(self::$_PATH[1]) && listeners('route/' . self::$_PATH[0] . '+' . self::$_PATH[1])) {
