@@ -44,7 +44,7 @@ class Emailing
      * a proper 'multipart/alternative' attachment.
      *
      * @param string $to       Destination e-mail address (or "Name <email>" combo)
-     * @param string $template Template to load in 'templates/email/' (i.e. 'account')
+     * @param string $template Template to load in 'templates/email/' (i.e. 'newaccount')
      * @param array  $args     Arguments to pass to template
      *
      * @return bool Whether sending succeeded

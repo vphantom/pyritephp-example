@@ -1,40 +1,41 @@
-<h1>Preferences</h1>
-
 {% if saved %}
 	{% if success %}
-		{{ ui.alert(success, "Saved successfully.") }}
+		{{ lib.alert(success, "Saved successfully.") }}
 	{% else %}
-		{{ ui.alert(success, "An error occurred while attempting to save.") }}
+		{{ lib.alert(success, "An error occurred while attempting to save.  Mis-typed password, perhaps?") }}
 	{% endif %}
 {% else %}
 
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		Settings &amp; Information
+	</div>
+	<div class="panel-body">
+		<form id="user_prefs" method="post" class="form-auto">
+			{{ filter('form_begin', 'user_prefs') |raw }}
+			<input data-label="Name" type="text" id="name" value="{{ session.user.name }}" required minlength="2" maxlength="100">
+			<button type="submit">Save changes</button>
+		</form>
+	</div>
+</div>
 
-{{ form.begin({
-	id    : 'user_edit',
-	method: 'post'
-}) }}
-
-	{{ form.input({
-		label    : 'Name',
-		type     : 'text',
-		id       : 'name',
-		value    : session.user.name,
-		required : null,
-		minlength: 2,
-		maxlength: 100
-	}) }}
-
-	{{ form.input({
-		label    : 'E-mail',
-		type     : 'email',
-		id       : 'email',
-		value    : session.user.email,
-		required : null,
-		maxlength: 100
-	}) }}
-
-	{{ form.button({ label:'Save changes', type:'submit' }) }}
-
-{{ form.end() }}
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		Change e-mail or password
+	</div>
+	<div class="panel-body">
+		<form id="user_passmail" method="post" class="form-auto">
+			<p>For your protection, to change either your e-mail address or your password, you will need to re-enter your current password.  A notification will also be e-mailed to you (at both old and new addresses if you changed it).</p>
+			{{ filter('form_begin', 'user_passmail') |raw }}
+			<input data-label="E-mail" type="email" id="email" value="{{ session.user.email }}" required maxlength="100">
+			<p>&nbsp;</p>
+			<input data-label="Current password" type="password" id="password" required>
+			<p>&nbsp;</p>
+			<input data-label="New password" type="password" id="newpassword1" minlength="8" maxlength="16" placeholder="Fill out only if you wish to change your password">
+			<input data-label="Repeat password" type="password" id="newpassword2" maxlength="16" placeholder="again, to confirm" data-parsley-equalto="#newpassword1" data-parsley-validate-if-empty>
+			<button type="submit">Save changes</button>
+		</form>
+	</div>
+</div>
 
 {% endif %}

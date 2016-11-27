@@ -16,10 +16,13 @@ $().ready(function() {
   var excludedInputs = 'input[type=button], input[type=submit], input[type=reset], input[type=hidden], [disabled], :hidden';  // eslint-disable-line max-len
 
   // Bootstrap-ize forms before enabling Parsley on them
-  $('form.form-horizontal').each(function() {
-    $(this).attr('name', $(this).attr('id'));
+  $('form.form-auto').each(function() {
+    $(this)
+      .attr('name', $(this).attr('id'))
+      .addClass('form-horizontal')
+    ;
   });
-  $('form.form-horizontal input')
+  $('form.form-auto input')
     .not(excludedInputs)
     .each(function() {
       var id    = $(this).attr('id');
@@ -42,7 +45,7 @@ $().ready(function() {
         .wrap('<div class="col-sm-10"></div>');
     }
   );
-  $('form.form-horizontal button').each(function() {
+  $('form.form-auto button').each(function() {
     $(this)
       .addClass('btn btn-default')
       .wrap('<div class="form-group"></div>')

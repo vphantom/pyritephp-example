@@ -43,6 +43,7 @@ class User
                 id           INTEGER PRIMARY KEY AUTOINCREMENT,
                 email        VARCHAR(255) NOT NULL DEFAULT '',
                 passwordHash VARCHAR(255) NOT NULL DEFAULT '',
+                onetimeHash  VARCHAR(255) NOT NULL DEFAULT '',
                 name         VARCHAR(255) NOT NULL DEFAULT ''
             )
             "
@@ -104,6 +105,9 @@ class User
      *
      * If an 'id' key is present in $cols, it is silently ignored.
      *
+     * Special keys 'newpassword1' and 'newpassword2' trigger a re-computing
+     * of 'passwordHash'.
+     *
      * @param int   $id   ID of the user to update
      * @param array $cols Associative array of columns to update
      *
@@ -118,6 +122,14 @@ class User
             unset($cols['id']);
         };
 
+        if (isset($cols['newpassword1'])
+            && strlen($cols['newpassword1']) >= 8
+            && isset($cols['newpassword2'])
+            && $cols['newpassword1'] === $cols['newpassword2']
+        ) {
+            $cols['passwordHash'] = password_hash($cols['newpassword1'], PASSWORD_DEFAULT);
+            // Entries 'newpassword[12]' will be safely skipped by $db->update()
+        };
         $result = $db->update(
             'users',
             $cols,
