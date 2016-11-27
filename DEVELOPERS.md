@@ -241,6 +241,13 @@ Invoked at the very end of the request process.  Used for proper clean-up.
 Triggered when the current user's identity or credentials have changed.  Useful for cache and data invalidation.
 
 
+### Emailing Events
+
+#### email_send (*$to*, *$template*[, *$args[]*])
+
+Uses `render_blocks` (below) to load `templates/email/$template` with optional `$args[]`, expecting block `subject` as well as `text` and/or `html`.  A MIME message is then built from those and sent to `$to`.  Should be triggered with `pass()` as it returns its success status.
+
+
 ### Templating Events
 
 #### http_status (*$code*)
