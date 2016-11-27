@@ -192,11 +192,39 @@ class Twigger
         );
         self::$_safeBody .= self::$_twig->render($name, $env);
     }
+
+    /**
+     * Render all blocks from a template
+     *
+     * @param string $name File name from within templates/
+     * @param array  $args Associative array of variables to pass along
+     *
+     * @return array Associative array of all blocks rendered from the template
+     */
+    public static function renderBlocks($name, $args = array())
+    {
+        $env = array_merge(
+            $args,
+            array(
+                'session' => $_SESSION,
+                'req' => grab('request'),
+                'post' => $_POST
+            )
+        );
+        $template = self::$_twig->loadTemplate($name);
+        $blockNames = $template->getBlockNames($env);
+        $results = array();
+        foreach ($blockNames as $blockName) {
+            $results[$blockName] = $template->renderBlock($blockName, $env);
+        };
+        return $results;
+    }
 }
 
 on('startup', 'Twigger::startup', 99);
 on('shutdown', 'Twigger::shutdown', 1);
 on('render', 'Twigger::render');
+on('render_blocks', 'Twigger::renderBlocks');
 on('title', 'Twigger::title');
 on('http_status', 'Twigger::status');
 on('language', 'Twigger::setLang');

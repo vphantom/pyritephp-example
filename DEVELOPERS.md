@@ -259,6 +259,10 @@ Prepends `$prepend` to the current title to be displayed.  If the title wasn't e
 
 Render the named `$template` with optional supplied associative `$args[]`.  See *Templating* above for the location of template files.
 
+#### render_blocks (*$template*[, *$args[]*])
+
+Load `$template` with optional supplied associative `$args[]`, then renders each block (if any) found in an associative array (keyed by block name) which is returned, *not displayed*.  Thus it should be triggered with `grab()`.
+
 
 ### Form Events
 
