@@ -63,6 +63,17 @@ class Router
         self::$_req['base'] = ($lang === $PPHP['config']['global']['default_lang'] ? '' : "/{$lang}");
         self::$_req['path'] = implode('/', self::$_PATH);
         self::$_req['query'] = ($_SERVER['QUERY_STRING'] !== '' ? '?' . $_SERVER['QUERY_STRING'] : '');
+        self::$_req['host'] = $_SERVER['HTTP_HOST'];
+        self::$_req['ssl']
+            = (
+                (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+                ||
+                (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)
+                ||
+                (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+                ||
+                (isset($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on')
+            );
         trigger('language', $lang);
 
         if (isset(self::$_PATH[1]) && listeners('route/' . self::$_PATH[0] . '+' . self::$_PATH[1])) {

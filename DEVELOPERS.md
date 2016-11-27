@@ -89,6 +89,14 @@ Current query string, including leading '?'.  Since forms should normally use th
 <a href="{{ req.base }}/{{ req.path }}{{ req.query }}">...</a>
 ```
 
+#### req.host
+
+The server's host name (and possibly port number) as found in the request's `Host` header.
+
+#### req.ssl
+
+True if current request appears to have been served using HTTPS.  (This uses various HTTP headers in addition to PHP's `$_SERVER['HTTPS']` which can not always be relied upon.)
+
 #### req.status
 
 An integer between 100 and 599.
