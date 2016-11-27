@@ -98,18 +98,19 @@ on(
                 return;
             };
             $saved = true;
-            if (pass('login', $_SESSION['user']['email'], $_POST['password'])) {
+            $oldEmail = $_SESSION['user']['email'];
+            if (pass('login', $oldEmail, $_POST['password'])) {
                 if ($success = pass('user_update', $_SESSION['user']['id'], $_POST)) {
                     trigger(
                         'email_send',
-                        "{$_SESSION['user']['name']} <{$_SESSION['user']['email']}>",
+                        "{$_SESSION['user']['name']} <{$oldEmail}>",
                         'editaccount'
                     );
-                    if ($_POST['email'] !== $_SESSION['user']['email']) {
-                        // TODO: Security audit: does this get passed to Sendmail via RFC822 headers or via command line?
+                    $newEmail = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
+                    if ($newEmail !== false  &&  $newEmail !== $oldEmail) {
                         trigger(
                             'email_send',
-                            "{$_SESSION['user']['name']} <{$_POST['email']}>",
+                            "{$_SESSION['user']['name']} <{$newEmail}>",
                             'editaccount'
                         );
                     };
