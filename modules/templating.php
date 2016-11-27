@@ -174,7 +174,7 @@ class Twigger
     /**
      * Render a template file
      *
-     * @param string $name File name from within templates/ without extension
+     * @param string $name File name from within templates/
      * @param array  $args Associative array of variables to pass along
      *
      * @return null
@@ -182,7 +182,8 @@ class Twigger
     public static function render($name, $args = array())
     {
         $env = array_merge(
-            $args, array(
+            $args,
+            array(
                 'title' => self::$_title,
                 'session' => $_SESSION,
                 'req' => grab('request'),
