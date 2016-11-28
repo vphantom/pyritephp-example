@@ -194,7 +194,7 @@ class User
             $cols['passwordHash'] = password_hash($cols['password'], PASSWORD_DEFAULT);
         };
         if (isset($cols['onetime'])) {
-            $onetime = md5(mcrypt_create_iv(32));
+            $onetime = md5(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
             $cols['onetimeHash'] = password_hash($onetime, PASSWORD_DEFAULT);
         };
         $result = $db->insert('users', $cols);

@@ -31,7 +31,7 @@ on(
     'form_begin',
     function ($form_name) {
         $name = hashname($form_name);
-        $token = md5(mcrypt_create_iv(32));
+        $token = md5(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
         $_SESSION[$name] = $token;
         return '<input type="hidden" name="'.$name.'" value="'.$token.'" />';
     }
