@@ -49,27 +49,10 @@ class Session
             . $_SERVER['HTTP_USER_AGENT']
         ;
 
-        // Catch all possible hints of the client's IP address, not just REMOTE_ADDR
-        foreach (
-            array(
-                'HTTP_CLIENT_IP',
-                'HTTP_X_FORWARDED_FOR',
-                'HTTP_X_FORWARDED',
-                'HTTP_X_CLUSTER_CLIENT_IP',
-                'HTTP_FORWARDED_FOR',
-                'HTTP_FORWARDED',
-                'REMOTE_ADDR'
-            )
-            as $key
-        ) {
-            if (array_key_exists($key, $_SERVER)) {
-                foreach (explode(',', $_SERVER[$key]) as $ip) {
-                    if (filter_var($ip, FILTER_VALIDATE_IP)) {
-                        $magic .= $ip;
-                    };
-                };
-            };
-        };
+        // This is more sophisticated than just $_SERVER['REMOTE_ADDR']
+        $req = grab('request');
+        $magic .= $req['remote_addr'];
+
         return md5($magic);
     }
 
@@ -167,7 +150,7 @@ class Session
     }
 }
 
-on('startup', 'Session::startup', 1);
+on('startup', 'Session::startup', 10);
 on('shutdown', 'Session::shutdown', 99);
 on('login', 'Session::login', 1);
 on('logout', 'Session::reset', 1);

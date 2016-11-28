@@ -64,35 +64,21 @@ class Router
     }
 
     /**
-     * Build route from requested URL
-     *
-     * - Extract language from initial '/xx/'
-     * - Build route/foo+bar if handled, route/foo otherwise
-     * - Default to route/main
-     * - Trigger 404 status if not handled at all
+     * Start populating request details
      *
      * @return null
      */
-    public static function startup()
+    public static function initRequest()
     {
         global $PPHP;
 
         self::$_req['status'] = 200;
         self::$_req['redirect'] = false;
-
         self::$_PATH = explode('/', trim($_SERVER['PATH_INFO'], '/'));
         while (count(self::$_PATH) > 0 && self::$_PATH[0] === '') {
             array_shift(self::$_PATH);
         };
 
-        // Eat up initial directory as language if it's 2 characters
-        $lang = $PPHP['config']['global']['default_lang'];
-        if (isset(self::$_PATH[0]) && strlen(self::$_PATH[0]) === 2) {
-            $lang = strtolower(array_shift(self::$_PATH));
-        };
-        self::$_req['lang'] = $lang;
-        self::$_req['default_lang'] = $PPHP['config']['global']['default_lang'];
-        self::$_req['base'] = ($lang === $PPHP['config']['global']['default_lang'] ? '' : "/{$lang}");
         self::$_req['path'] = implode('/', self::$_PATH);
         self::$_req['query'] = ($_SERVER['QUERY_STRING'] !== '' ? '?' . $_SERVER['QUERY_STRING'] : '');
         self::$_req['host'] = $_SERVER['HTTP_HOST'];
@@ -108,6 +94,31 @@ class Router
                 (isset($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on')
             );
         self::$_req['protocol'] = (self::$_req['ssl'] ? 'https' : 'http');
+
+    }
+
+    /**
+     * Build route from requested URL
+     *
+     * - Extract language from initial '/xx/'
+     * - Build route/foo+bar if handled, route/foo otherwise
+     * - Default to route/main
+     * - Trigger 404 status if not handled at all
+     *
+     * @return null
+     */
+    public static function startup()
+    {
+        global $PPHP;
+
+        // Eat up initial directory as language if it's 2 characters
+        $lang = $PPHP['config']['global']['default_lang'];
+        if (isset(self::$_PATH[0]) && strlen(self::$_PATH[0]) === 2) {
+            $lang = strtolower(array_shift(self::$_PATH));
+        };
+        self::$_req['lang'] = $lang;
+        self::$_req['default_lang'] = $PPHP['config']['global']['default_lang'];
+        self::$_req['base'] = ($lang === $PPHP['config']['global']['default_lang'] ? '' : "/{$lang}");
         trigger('language', $lang);
 
         if (isset(self::$_PATH[1]) && listeners('route/' . self::$_PATH[0] . '+' . self::$_PATH[1])) {
@@ -186,6 +197,7 @@ class Router
     }
 }
 
+on('startup', 'Router::initRequest', 1);
 on('startup', 'Router::startup', 50);
 on('request', 'Router::getRequest');
 on('http_status', 'Router::setStatus');
