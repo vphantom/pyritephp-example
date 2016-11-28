@@ -72,9 +72,6 @@ class AuditTrail
      * oldValue   - Previous value for affected field
      * newValue   - New value for affected field
      *
-     * Note that if fieldName is specified, at least newValue should be
-     * defined as well.
-     *
      * @param array $args Details of the transaction
      *
      * @return null
