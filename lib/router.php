@@ -32,6 +32,38 @@ class Router
     private static $_req = array();
 
     /**
+     * Get probable browser IP address
+     *
+     * @return string
+     */
+    private static function _remoteIP()
+    {
+        // Catch all possible hints of the client's IP address, not just REMOTE_ADDR
+        foreach (
+            array(
+                'HTTP_CLIENT_IP',
+                'HTTP_X_FORWARDED_FOR',
+                'HTTP_X_FORWARDED',
+                'HTTP_X_CLUSTER_CLIENT_IP',
+                'HTTP_FORWARDED_FOR',
+                'HTTP_FORWARDED',
+                'REMOTE_ADDR'
+            )
+            as $key
+        ) {
+            if (array_key_exists($key, $_SERVER)) {
+                foreach (explode(',', $_SERVER[$key]) as $ip) {
+                    if (filter_var($ip, FILTER_VALIDATE_IP)) {
+                        // Return the first one found
+                        return $ip;
+                    };
+                };
+            };
+        };
+        return null;
+    }
+
+    /**
      * Build route from requested URL
      *
      * - Extract language from initial '/xx/'
@@ -64,6 +96,7 @@ class Router
         self::$_req['path'] = implode('/', self::$_PATH);
         self::$_req['query'] = ($_SERVER['QUERY_STRING'] !== '' ? '?' . $_SERVER['QUERY_STRING'] : '');
         self::$_req['host'] = $_SERVER['HTTP_HOST'];
+        self::$_req['remote_addr'] = self::_remoteIP();
         self::$_req['ssl']
             = (
                 (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')

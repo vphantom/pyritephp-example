@@ -89,6 +89,10 @@ Current query string, including leading '?'.  Since forms should normally use th
 <a href="{{ req.base }}/{{ req.path }}{{ req.query }}">...</a>
 ```
 
+### req.remote_addr
+
+The browser's IP address, as gathered from various PHP and HTTP header information, including common proxy headers.
+
 #### req.host
 
 The server's host name (and possibly port number) as found in the request's `Host` header.
