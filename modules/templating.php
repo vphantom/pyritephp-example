@@ -93,19 +93,23 @@ class Twigger
 
         self::$_twig = $twig;
 
-        self::$_template = $twig->loadTemplate('layout.html');
+        try {
+            self::$_template = $twig->loadTemplate('layout.html');
 
-        if (self::$_status !== 200) {
-            http_response_code(self::$_status);
+            if (self::$_status !== 200) {
+                http_response_code(self::$_status);
+            };
+            echo self::$_template->renderBlock(
+                'head',
+                array(
+                    'session' => $_SESSION,
+                    'req' => grab('request'),
+                    'post' => $_POST
+                )
+            );
+        } catch (Exception $e) {
+            echo $e->getMessage();
         };
-        echo self::$_template->renderBlock(
-            'head',
-            array(
-                'session' => $_SESSION,
-                'req' => grab('request'),
-                'post' => $_POST
-            )
-        );
         flush();
         ob_start();
     }
@@ -119,17 +123,21 @@ class Twigger
     {
         $body = ob_get_contents();
         ob_end_clean();
-        echo self::$_template->renderBlock(
-            'body',
-            array(
-                'title' => self::$_title,
-                'body' => self::$_safeBody,
-                'stdout' => $body,
-                'session' => $_SESSION,
-                'req' => grab('request'),
-                'post' => $_POST
-            )
-        );
+        try {
+            echo self::$_template->renderBlock(
+                'body',
+                array(
+                    'title' => self::$_title,
+                    'body' => self::$_safeBody,
+                    'stdout' => $body,
+                    'session' => $_SESSION,
+                    'req' => grab('request'),
+                    'post' => $_POST
+                )
+            );
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        };
     }
 
     /**
@@ -190,7 +198,11 @@ class Twigger
                 'post' => $_POST
             )
         );
-        self::$_safeBody .= self::$_twig->render($name, $env);
+        try {
+            self::$_safeBody .= self::$_twig->render($name, $env);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        };
     }
 
     /**
@@ -211,11 +223,15 @@ class Twigger
                 'post' => $_POST
             )
         );
-        $template = self::$_twig->loadTemplate($name);
-        $blockNames = $template->getBlockNames($env);
-        $results = array();
-        foreach ($blockNames as $blockName) {
-            $results[$blockName] = $template->renderBlock($blockName, $env);
+        try {
+            $template = self::$_twig->loadTemplate($name);
+            $blockNames = $template->getBlockNames($env);
+            $results = array();
+            foreach ($blockNames as $blockName) {
+                $results[$blockName] = $template->renderBlock($blockName, $env);
+            };
+        } catch (Exception $e) {
+            echo $e->getMessage();
         };
         return $results;
     }
