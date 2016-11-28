@@ -1,16 +1,27 @@
+{% if created %}
+	{% if success %}
+		{{ lib.alert(success, "Account created! Please check your e-mail for the activation link.") }}
+	{% else %}
+		{{ lib.alert(success, "An error occurred while attempting to create your account. The e-mail address is already registered, perhaps?") }}
+	{% endif %}
+{% else %}
+
 <div class="container">
-	<div class="jumbotron">
-		{% if req.status == 440 %}
-		<h1>Session Expired</h1>
-		{% elseif req.status == 403 %}
-		<h1>Please Sign In</h1>
-		{% else %}
-		<h1>Welcome to PyritePHP!</h1>
-		{% endif %}
-		{% if try_again %}
-		<p>The e-mail address and/or password you entered is incorrect.</p>
-		{% endif %}
-		<p>In order to use this application, you need to log in to your account here.  If you don't have an account yet, please consider registering.</p>
-		<p><a class="btn btn-primary btn-lg" href="#" role="button">Register &raquo;</a></p>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h2>Sign up</h2>
+		</div>
+		<div class="panel-body">
+			<form class="form-auto" method="post" id="registration">
+				{{ filter('form_begin', 'registration') |raw }}
+				<input data-label="E-Mail"          type="email"    id="email" placeholder="Your e-mail address identifies you here" maxlength="100" required>
+				<input data-label="Name"            type="text"     id="name" minlength="3" maxlength="100" required>
+				<input data-label="Password"        type="password" id="password" minlength="8" maxlength="16" required>
+				<input data-label="Repeat password" type="password" id="password2" data-parsley-equalto="#password" data-parsley-validate-if-empty>
+				<button type="submit">Confirm e-mail to create account</button>
+			</form>
+		</div>
 	</div>
 </div>
+
+{% endif %}

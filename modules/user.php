@@ -48,6 +48,12 @@ class User
             )
             "
         );
+        $db->exec(
+            "
+            CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email
+            ON users (email)
+            "
+        );
         if (!$db->selectAtom("SELECT id FROM users WHERE id='1'")) {
             echo "Creating admin user...\n";
             $email = readline("E-mail address: ");
@@ -81,19 +87,33 @@ class User
     /**
      * Load and authenticate a user
      *
+     * If the user has a one-time password set, using a regular password will
+     * fail.
+     *
      * @param string $email    E-mail address
      * @param string $password Plain text password (supplied via web form)
+     * @param string $onetime  (Optional) Use this one-time password instead
      *
      * @return array|bool Associative array for the user or false if not authorized
      */
-    public static function login($email, $password)
+    public static function login($email, $password, $onetime = '')
     {
         global $PPHP;
         $db = $PPHP['db'];
 
         if ($user = $db->selectSingleArray("SELECT * FROM users WHERE email=?", array($email))) {
-            if (password_verify($password, $user['passwordHash'])) {
-                return $user;
+
+            if ($onetime !== '') {
+                if (password_verify($onetime, $user['onetimeHash'])) {
+                    $db->update('users', array('onetimeHash' => ''), 'WHERE id=?', array($user['id']));
+                    return $user;
+                };
+            } else {
+                if ($user['onetimeHash'] === ''
+                    &&  password_verify($password, $user['passwordHash'])
+                ) {
+                    return $user;
+                };
             };
         };
 
@@ -143,8 +163,46 @@ class User
 
         return false;
     }
+
+    /**
+     * Create new user from information
+     *
+     * If an 'id' key is present in $cols, it is silently ignored.
+     *
+     * Special key 'password' is used to create 'passwordHash', instead of
+     * being inserted directly.
+     *
+     * If special key 'onetime' is present, it will trigger the generation of
+     * a one time password, which will be required for the user's next login
+     * instead of a regular password and will be returned instead of the new
+     * user ID.
+     *
+     * @param array $cols Associative array of columns to set
+     *
+     * @return bool|int New ID on success, false on failure
+     */
+    public static function create($cols = array())
+    {
+        global $PPHP;
+        $db = $PPHP['db'];
+
+        if (isset($cols['id'])) {
+            unset($cols['id']);
+        };
+
+        if (isset($cols['password'])) {
+            $cols['passwordHash'] = password_hash($cols['password'], PASSWORD_DEFAULT);
+        };
+        if (isset($cols['onetime'])) {
+            $onetime = md5(mcrypt_create_iv(32));
+            $cols['onetimeHash'] = password_hash($onetime, PASSWORD_DEFAULT);
+        };
+        $result = $db->insert('users', $cols);
+        return ($result && isset($cols['onetime']) ? $onetime : $result);
+    }
 }
 
 on('install', 'User::install');
 on('authenticate', 'User::login');
 on('user_update', 'User::update');
+on('user_create', 'User::create');

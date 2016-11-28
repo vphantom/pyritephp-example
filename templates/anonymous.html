@@ -10,11 +10,15 @@
 		{% if try_again %}
 			<p>The e-mail address and/or password you entered is incorrect.</p>
 		{% endif %}
+		{% if onetime %}
+			<p>The activation link was expired or invalid.</p>
+		{% endif %}
 		{% if session.identified %}
 			<p>You probably arrived here from submitting an old form.  Please try again.</p>
 		{% else %}
 			<p>In order to use this application, you need to log in to your account here.  If you don't have an account yet, please consider registering.</p>
 			<p><a class="btn btn-primary btn-lg" type="button" href="{{ req.base }}/register">Register &raquo;</a></p>
+			<p>If you already have an account and forgot your password, please <a href="{{ req.base }}/reset_password">click here</a>.</p>
 		{% endif %}
 	</div>
 </div>

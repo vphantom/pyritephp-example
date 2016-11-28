@@ -137,12 +137,13 @@ class Session
      *
      * @param string $email    E-mail address
      * @param string $password Plain text password (supplied via web form)
+     * @param string $onetime  One-time password instead of password
      *
      * @return bool Whether the operation succeeded
      */
-    public static function login($email, $password)
+    public static function login($email, $password, $onetime = '')
     {
-        if (is_array($user = grab('authenticate', $email, $password))) {
+        if (is_array($user = grab('authenticate', $email, $password, $onetime))) {
             self::reset();
             $_SESSION['user'] = $user;
             $_SESSION['identified'] = true;

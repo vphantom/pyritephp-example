@@ -1,0 +1,36 @@
+{% block subject %}
+PyritePHP - Account confirmation
+{% endblock %}
+
+
+{% block text %}
+Hello,
+
+This message is to confirm that you control this e-mail address linked to a
+new PyritePHP account.  Please copy and paste the following link in your web
+browser to confirm:
+
+{{ req.protocol }}://{{ req.host }}/login?{{ validation_link |raw }}
+
+If you have not requested this verification, we apologize for this note, which
+you can safely discard.
+
+Thank you,
+PyritePHP
+{% endblock %}
+
+
+{% block html %}
+<p>Hello,</p>
+<p>
+This message is to confirm that you control this e-mail address linked to a
+new PyritePHP account.  Please click the following link to confirm:
+</p>
+<p>
+<a href="{{ req.protocol }}://{{ req.host }}/login?{{ validation_link }}">{{ req.protocol }}://{{ req.host }}/login?{{ validation_link }}</a>
+</p>
+<p>
+Thank you,
+<br>PyritePHP
+</p>
+{% endblock %}

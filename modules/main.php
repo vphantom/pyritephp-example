@@ -32,6 +32,35 @@ function isGuest()
     return false;
 }
 
+/**
+ * Sanitize e-mail address
+ *
+ * @param string $email String to filter
+ *
+ * @return string
+ */
+function cleanEmail($email)
+{
+    // filter_var()'s FILTER_SANITIZE_EMAIL is way too permissive
+    return preg_replace('/[^a-zA-Z0-9@.,_+-]/', '', $email);
+}
+
+/**
+ * Strip low-ASCII and <>`|\"' from string
+ *
+ * @param string $string String to filter
+ *
+ * @return string
+ */
+function cleanText($string)
+{
+    return preg_replace(
+        '/[<>`|\\"\']/',
+        '',
+        filter_var($string, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES|FILTER_FLAG_STRIP_LOW)
+    );
+}
+
 on(
     'route/main',
     function () {
@@ -49,16 +78,30 @@ on(
     'route/login',
     function () {
         $req = grab('request');
-        if (!pass('form_validate', 'login-form')) {
-            trigger('http_status', 440);
-            trigger('render', 'anonymous.html');
-            return;
+
+        if (isset($_GET['email']) && isset($_GET['onetime'])) {
+
+            // Account creation validation link
+            if (!pass('login', $_GET['email'], null, $_GET['onetime'])) {
+                trigger('http_status', 403);
+                trigger('render', 'anonymous.html', array('onetime' => true));
+                return;
+            };
+        } else {
+
+            // Normal login
+            if (!pass('form_validate', 'login-form')) {
+                trigger('http_status', 440);
+                trigger('render', 'anonymous.html');
+                return;
+            };
+            if (!pass('login', $_POST['email'], $_POST['password'])) {
+                trigger('http_status', 403);
+                trigger('render', 'anonymous.html', array('try_again' => true));
+                return;
+            };
         };
-        if (!pass('login', $_POST['email'], $_POST['password'])) {
-            trigger('http_status', 403);
-            trigger('render', 'anonymous.html', array('try_again' => true));
-            return;
-        };
+
         trigger('http_redirect', $req['base'] . '/');
     }
 );
@@ -87,30 +130,33 @@ on(
                 return;
             };
             $saved = true;
+            $_POST['name'] = cleanText($_POST['name']);
             $success = pass('user_update', $_SESSION['user']['id'], $_POST);
         };
 
         // Change e-mail or password
         if (isset($_POST['email'])) {
+            $_POST['email'] = cleanEmail($_POST['email']);
             if (!pass('form_validate', 'user_passmail')) {
                 trigger('http_status', 440);
                 trigger('render', 'anonymous.html');
                 return;
             };
             $saved = true;
-            $oldEmail = $_SESSION['user']['email'];
+            $oldEmail = cleanEmail($_SESSION['user']['email']);
             if (pass('login', $oldEmail, $_POST['password'])) {
                 if ($success = pass('user_update', $_SESSION['user']['id'], $_POST)) {
+                    $name = cleanName($_SESSION['user']['name']);
                     trigger(
                         'email_send',
-                        "{$_SESSION['user']['name']} <{$oldEmail}>",
+                        "{$name} <{$oldEmail}>",
                         'editaccount'
                     );
-                    $newEmail = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
+                    $newEmail = $_POST['email'];
                     if ($newEmail !== false  &&  $newEmail !== $oldEmail) {
                         trigger(
                             'email_send',
-                            "{$_SESSION['user']['name']} <{$newEmail}>",
+                            "{$name} <{$newEmail}>",
                             'editaccount'
                         );
                     };
@@ -123,6 +169,45 @@ on(
             'user_prefs.html',
             array(
                 'saved' => $saved,
+                'success' => $success
+            )
+        );
+    }
+);
+
+on(
+    'route/register',
+    function () {
+        $created = false;
+        $success = false;
+        if (isset($_POST['email'])) {
+            if (!pass('form_validate', 'registration')) {
+                trigger('http_status', 440);
+                trigger('render', 'anonymous.html');
+                return;
+            };
+            $created = true;
+            $_POST['email'] = cleanEmail($_POST['email']);
+            $_POST['name'] = cleanText($_POST['name']);
+            $_POST['onetime'] = true;
+            if (($onetime = grab('user_create', $_POST)) !== false) {
+                $success = true;
+                $link = http_build_query(array( 'email' => $_POST['email'], 'onetime' => $onetime));
+                trigger(
+                    'email_send',
+                    "{$_POST['name']} <{$_POST['email']}>",
+                    'newaccount',
+                    array(
+                        'validation_link' => $link
+                    )
+                );
+            };
+        };
+        trigger(
+            'render',
+            'register.html',
+            array(
+                'created' => $created,
                 'success' => $success
             )
         );
