@@ -80,18 +80,14 @@ class AuditTrail
      * @param string|null     $fieldName  Specific field affected
      * @param string|int|null $oldValue   Previous value for affected field
      * @param string|int|null $newValue   New value for affected field
+     * @param string|int|null $userId     Over-ride session userId with this one
      *
      * @return null
      */
-    public static function add($objectType, $objectId = null, $action = null, $fieldName = null, $oldValue = null, $newValue = null)
+    public static function add($objectType, $objectId = null, $action = null, $fieldName = null, $oldValue = null, $newValue = null, $userId = 0)
     {
         global $PPHP;
         $db = $PPHP['db'];
-
-        $userId = 0;
-        if (isset($_SESSION['user']['id'])) {
-            $userId = $_SESSION['user']['id'];
-        };
 
         $ip = '127.0.0.1';
         $req = grab('request');
@@ -106,11 +102,16 @@ class AuditTrail
             if (isset($objectType['fieldName'])) $fieldName = $objectType['fieldName'];
             if (isset($objectType['oldValue']))  $oldValue  = $objectType['oldValue'];
             if (isset($objectType['newValue']))  $newValue  = $objectType['newValue'];
+            if (isset($objectType['userId']))    $userId    = $objectType['userId'];
             if (isset($objectType['objectType'])) {
                 $objectType = $objectType['objectType'];
             } else {
                 $objectType = null;
             };
+        };
+
+        if ($userId === 0  &&  isset($_SESSION['user']['id'])) {
+            $userId = $_SESSION['user']['id'];
         };
 
         $db->exec(
@@ -131,8 +132,59 @@ class AuditTrail
             )
         );
     }
+
+    /**
+     * Get chronological history for a given filter
+     *
+     * Any supplied argument represents a restriction to apply.  At least one
+     * restriction is required; it is not allowed to load the entire global
+     * history at once.
+     *
+     * You can either use these positional arguments or specify a single
+     * associative array argument with only the keys you need defined.
+     *
+     * @param int|null        $userId     Specific actor (*or args, see above)
+     * @param array|string    $objectType Class of object this applies to
+     * @param string|int|null $objectId   Specific instance acted upon
+     * @param string          $action     Type of action performed
+     * @param string|null     $fieldName  Specific field affected
+     *
+     * @return array List of associative arrays, one per entry
+     */
+    public static function get($userId, $objectType = null, $objectId = null, $action = null, $fieldName = null)
+    {
+        global $PPHP;
+        $db = $PPHP['db'];
+
+        $args = array();
+        if (is_array($userId)) {
+            $args = $userId;
+        } else {
+            if ($userId !== null)     $args['userId']     = $userId;
+            if ($objectType !== null) $args['objectType'] = $objectType;
+            if ($objectId !== null)   $args['objectId']   = $objectId;
+            if ($action !== null)     $args['action']     = $action;
+            if ($fieldName !== null)  $args['fieldName']  = $fieldName;
+        };
+
+        if (count($args) < 1) {
+            return array();
+        };
+
+        $query = "SELECT * FROM transactions WHERE ";
+        $queryArgs = array();
+        $queryChunks = array();
+        foreach ($args as $key => $val) {
+            $queryChunks[] = "{$key}=?";
+            $queryArgs[] = $val;
+        };
+        $query .= implode(' AND ', $queryChunks);
+        $query .= " ORDER BY timestamp ASC";
+
+        return $db->selectArray($query, $queryArgs);
+    }
 }
 
 on('install', 'AuditTrail::install');
 on('log', 'AuditTrail::add');
-
+on('history', 'AuditTrail::get');
