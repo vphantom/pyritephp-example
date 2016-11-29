@@ -19,3 +19,4 @@ if &filetype =~ 'javascript' || &filetype =~ 'json'
 endif
 au BufRead,BufNewFile *.html set filetype=htmldjango
 au BufRead,BufNewFile */templates/email/* set filetype=htmldjango
+au BufRead,BufNewFile */templates/lib set filetype=htmldjango
