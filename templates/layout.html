@@ -31,24 +31,15 @@
 					<a class="navbar-brand" href="{{ req.base }}/">PyritePHP</a>
 				</div>
 				<div id="navbar" class="navbar-collapse collapse">
-					<ul class="nav navbar-nav navbar-right">
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ req.lang }} <span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a href="/{% if 'en' != req.default_lang %}en/{% endif %}{{ req.path }}{{ req.query }}">English</a></li>
-								<li><a href="/{% if 'fr' != req.default_lang %}fr/{% endif %}{{ req.path }}{{ req.query }}">Français</a></li>
-							</ul>
-						</li>
-					</ul>
 					{% if session.identified %}
 					<ul class="nav navbar-nav navbar-right">
 						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ session.user.name }} <span class="caret"></span></a>
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ session.user.name }} <span class="glyphicon glyphicon-user"></span> <span class="caret"></span></a>
 							<ul class="dropdown-menu">
 								<li class="dropdown-header">{{ session.user.email }}</li>
-								<li><a href="{{ req.base }}/user/prefs">Preferences</a></li>
-								<li><a href="{{ req.base }}/user/history">Account History</a></li>
-								<li><a href="{{ req.base }}/logout">Sign out</a></li>
+								<li><a href="{{ req.base }}/user/prefs"><span class="glyphicon glyphicon-cog"></span> Preferences</a></li>
+								<li><a href="{{ req.base }}/user/history"><span class="glyphicon glyphicon-list"></span> Account History</a></li>
+								<li><a href="{{ req.base }}/logout"><span class="glyphicon glyphicon-off"></span> Sign out</a></li>
 							</ul>
 						</li>
 					</ul>
@@ -64,6 +55,15 @@
 						<button type="submit" class="btn btn-success">Sign in</button>
 					</form>
 					{% endif %}
+					<ul class="nav navbar-nav navbar-right">
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ req.lang }} <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="/{% if 'en' != req.default_lang %}en/{% endif %}{{ req.path }}{{ req.query }}">English</a></li>
+								<li><a href="/{% if 'fr' != req.default_lang %}fr/{% endif %}{{ req.path }}{{ req.query }}">Français</a></li>
+							</ul>
+						</li>
+					</ul>
 				</div>
 			</div>
 		</nav>
@@ -73,7 +73,7 @@
 				<div class="col-sm-3 col-md-2 sidebar">
 					<ul class="nav nav-sidebar">
 						<li><a href="{{ req.base }}/"{% if section == 'dashboard' %} class="active"{% endif %}><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
-						<li><a href="#">Section 2</a></li>
+						<li><a href="#"><span class="glyphicon glyphicon-wrench"></span> Administration</a></li>
 						<li><a href="#">Section 3</a></li>
 						<li><a href="#">Section 4</a></li>
 					</ul>

@@ -2,22 +2,19 @@
 <h2>Recent Account History</h2>
 <div class="table-responsive">
 	<table class="table table-hover table-condensed">
-		<thead>
-			<tr>
-				<th>Time (IP)</th>
-				<th>Action</th>
-				<th>Field</th>
-				<th>Old Value</th>
-				<th>New Value</th>
-		</thead>
 		<tbody>
 			{% for tx in history %}
-			<tr>
-				<td>{{ tx.localtimestamp }} ({{ tx.ip }})</td>
-				<td>{{ tx.action }}</td>
-				<td>{{ tx.fieldName }}</td>
-				<td>{{ tx.oldValue }}</td>
-				<td>{{ tx.newValue }}</td>
+			<tr{% if tx.action == 'modified' and (tx.fieldName=='email' or tx.fieldName=='password') %} class="warning"{% endif %}>
+				<td>{{ tx.localtimestamp }} ({{ lib.format_ip(tx.ip) }})</td>
+				{% if tx.action == 'modified' %}
+					<td colspan="2">{{ tx.action }} {{ tx.fieldName }}
+						{% if tx.oldValue %}from '{{ lib.format(tx.fieldName, tx.oldValue) }}'{% endif %}
+						{% if tx.newValue %}to '{{ lib.format(tx.fieldName, tx.newValue) }}'{% endif %}
+					</td>
+				{% else %}
+					<td>{{ tx.action }}</td>
+					<td>{{ tx.fieldName }}</td>
+				{% endif %}
 			</tr>
 			{% endfor %}
 		</tbody>

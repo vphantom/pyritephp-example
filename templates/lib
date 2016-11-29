@@ -7,3 +7,22 @@
 	{{ body }}
 </div>
 {% endmacro %}
+
+{% macro format_ip(ip) -%}
+<a href="http://www.ip-adress.com/ip_tracer/{{ ip }}">{{ ip }}</a>
+{%- endmacro %}
+
+{% macro format_email(email) -%}
+<a href="mailto:{{ email }}">{{ email }}</a>
+{%- endmacro %}
+
+{% import _self as lib %}
+{% macro format(type, value) -%}
+	{%- if type == 'ip' -%}
+		{{ lib.format_ip(value) }}
+	{%- elseif type == 'email' -%}
+		{{ lib.format_email(value) }}
+	{%- else -%}
+		{{ value }}
+	{%- endif -%}
+{%- endmacro %}
