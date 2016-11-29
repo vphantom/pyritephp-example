@@ -87,6 +87,13 @@ class Twigger
                 }
             )
         );
+        $twig->addFunction(
+            new \Twig_SimpleFunction(
+                'title', function () {
+                    return call_user_func_array('self::title', func_get_args());
+                }
+            )
+        );
 
         // Load utilities globally
         $twig->addGlobal('lib', $twig->loadTemplate('lib'));
