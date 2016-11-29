@@ -106,7 +106,7 @@ class Twigger
             if (self::$_status !== 200) {
                 http_response_code(self::$_status);
             };
-            echo self::$_template->renderBlock(
+            self::$_template->displayBlock(
                 'head',
                 array(
                     'session' => $_SESSION,
@@ -131,7 +131,7 @@ class Twigger
         $body = ob_get_contents();
         ob_end_clean();
         try {
-            echo self::$_template->renderBlock(
+            self::$_template->displayBlock(
                 'body',
                 array(
                     'title' => self::$_title,
