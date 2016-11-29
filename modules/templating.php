@@ -104,7 +104,11 @@ class Twigger
         );
 
         // Load utilities globally
-        $twig->addGlobal('lib', $twig->loadTemplate('lib'));
+        try {
+            $twig->addGlobal('lib', $twig->loadTemplate('lib'));
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        };
 
         self::$_twig = $twig;
 
