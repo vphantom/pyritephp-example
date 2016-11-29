@@ -1,8 +1,8 @@
 {% if created %}
 	{% if success %}
-		{{ lib.alert(success, "Account created! Please check your e-mail for the activation link.") }}
+		{{ lib.alert(success, "Please check your e-mail for instructions.") }}
 	{% else %}
-		{{ lib.alert(success, "An error occurred while attempting to create your account. The e-mail address is already registered, perhaps?") }}
+		{{ lib.alert(success, "An error occurred while attempting to create your account.") }}
 	{% endif %}
 {% else %}
 

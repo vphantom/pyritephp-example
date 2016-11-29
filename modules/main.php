@@ -201,6 +201,18 @@ on(
                         'validation_link' => $link
                     )
                 );
+            } else {
+                if (($user = grab('user_fromemail', $_POST['email'])) !== false) {
+                    // Onetime failed because user exists, warn of duplicate
+                    // attempt via e-mail, don't hint that the user exists on
+                    // the web though!
+                    $success = true;
+                    trigger(
+                        'email_send',
+                        "{$user['name']} <{$user['email']}>",
+                        'duplicate'
+                    );
+                };
             };
         };
         trigger(

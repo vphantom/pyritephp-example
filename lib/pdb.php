@@ -131,21 +131,24 @@ class PDB
      *
      * @param array $args (Optional) List of values corresponding to placeholders
      *
-     * @return object PDB instance (for chaining)
+     * @return bool Whether it succeeded
      */
     private function _execute($args = array())
     {
         if ($this->_err) {
-            return $this;
+            return false;
         };
         if ($this->_sth) {
-            if (!$this->_sth->execute($args)) {
+            if ($this->_sth->execute($args)) {
+                return true;
+            } else {
                 $this->_err = implode(' ', $this->_sth->errorInfo());
+                return false;
             };
         } else {
             $this->_err = "No statement to execute.";
         };
-        return $this;
+        return false;
     }
 
     /**
@@ -160,8 +163,7 @@ class PDB
      */
     public function exec($q, $args = array())
     {
-        $this->_prepare($q)->_execute($args);
-        return $this->_sth ? $this->_sth->rowCount() : false;
+        return $this->_prepare($q)->_execute($args) ? $this->_sth->rowCount() : false;
     }
 
     /**
