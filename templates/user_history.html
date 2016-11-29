@@ -5,16 +5,23 @@
 		<tbody>
 			{% for tx in history %}
 			<tr{% if tx.action == 'modified' and (tx.fieldName=='email' or tx.fieldName=='password') %} class="warning"{% endif %}>
-				<td>{{ tx.localtimestamp }} ({{ lib.format_ip(tx.ip) }})</td>
-				{% if tx.action == 'modified' %}
-					<td colspan="2">{{ tx.action }} {{ tx.fieldName }}
+				<td class="fit">{{ tx.localtimestamp }} ({{ lib.format_ip(tx.ip) }})</td>
+				<td>
+					{% if tx.userId == session.user.id %}
+						I
+					{% else %}
+						{{ lib.format('user', tx.userId) }}
+					{% endif %}
+					{% if tx.action == 'modified' %}
+						changed {{ tx.fieldName }}
 						{% if tx.oldValue %}from '{{ lib.format(tx.fieldName, tx.oldValue) }}'{% endif %}
 						{% if tx.newValue %}to '{{ lib.format(tx.fieldName, tx.newValue) }}'{% endif %}
-					</td>
-				{% else %}
-					<td>{{ tx.action }}</td>
-					<td>{{ tx.fieldName }}</td>
-				{% endif %}
+					{% elseif tx.action == 'login' %}
+						logged in
+					{% else %}
+						{{ tx.action }} {{ tx.fieldName }}
+					{% endif %}
+				</td>
 			</tr>
 			{% endfor %}
 		</tbody>

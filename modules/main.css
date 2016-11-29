@@ -8,6 +8,11 @@ body {
 	font-weight: bold;
 }
 
+.fit {
+	white-space: nowrap;
+	width: 1%;
+}
+
 /* Left menu */
 .nav-sidebar {
 	margin: 0 -21px 20px -20px;

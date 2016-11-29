@@ -26,6 +26,7 @@
 class User
 {
     private static $_selectFrom = "SELECT *, CAST((julianday('now') - julianday(onetimeTime)) * 24 * 3600 AS INTEGER) AS onetimeElapsed FROM users";
+    private static $_resolved = array();
 
     /**
      * Create database tables if necessary
@@ -84,6 +85,31 @@ class User
         };
         $db->commit();
         echo "    done!\n";
+    }
+
+    /**
+     * Resolve a user ID to basic information
+     *
+     * Only id, name and email are included in this cached subset.  Useful for
+     * display purposes.
+     *
+     * @param int $id User ID to resolve
+     *
+     * @return array|bool Associative array for the user or false if not found
+     */
+    public static function resolve($id)
+    {
+        global $PPHP;
+
+        if (array_key_exists($id, self::$_resolved)) {
+            return self::$_resolved[$id];
+        };
+
+        $db = $PPHP['db'];
+        if ($user = $db->selectSingleArray("SELECT id, name, email FROM users WHERE id=?", array($id))) {
+            return self::$_resolved[$id] = $user;
+        };
+        return false;
     }
 
     /**
@@ -242,6 +268,7 @@ class User
 
 on('install', 'User::install');
 on('user_fromemail', 'User::fromEmail');
+on('user_resolve', 'User::resolve');
 on('authenticate', 'User::login');
 on('user_update', 'User::update');
 on('user_create', 'User::create');

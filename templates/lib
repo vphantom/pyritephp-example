@@ -16,12 +16,21 @@
 <a href="mailto:{{ email }}">{{ email }}</a>
 {%- endmacro %}
 
+{% macro format_user(id) -%}
+	{%- set user = grab('user_resolve', id) -%}
+	{%- if user != false -%}
+		<a href="mailto:{{ user.email }}">{{ user.name }}</a>
+	{%- endif -%}
+{%- endmacro %}
+
 {% import _self as lib %}
 {% macro format(type, value) -%}
 	{%- if type == 'ip' -%}
 		{{ lib.format_ip(value) }}
 	{%- elseif type == 'email' -%}
 		{{ lib.format_email(value) }}
+	{%- elseif type == 'user' -%}
+		{{ lib.format_user(value) }}
 	{%- else -%}
 		{{ value }}
 	{%- endif -%}
