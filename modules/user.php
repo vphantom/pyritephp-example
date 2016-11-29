@@ -227,6 +227,15 @@ class User
         };
         if (($result = $db->insert('users', $cols)) !== false) {
             trigger('log', 'user', $result, 'created');
+            trigger(
+                'log',
+                array(
+                    'userId'     => $result,
+                    'objectType' => 'user',
+                    'objectId'   => $result,
+                    'action'     => 'created'
+                )
+            );
         };
         return ($result && $onetime !== null) ? $onetime : $result;
     }
