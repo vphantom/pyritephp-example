@@ -146,7 +146,7 @@ on(
             $oldEmail = cleanEmail($_SESSION['user']['email']);
             if (pass('login', $oldEmail, $_POST['password'])) {
                 if ($success = pass('user_update', $_SESSION['user']['id'], $_POST)) {
-                    $name = cleanName($_SESSION['user']['name']);
+                    $name = cleanText($_SESSION['user']['name']);
                     trigger(
                         'email_send',
                         "{$name} <{$oldEmail}>",
