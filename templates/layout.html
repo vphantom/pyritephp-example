@@ -72,10 +72,10 @@
 			<div class="row">
 				<div class="col-sm-3 col-md-2 sidebar">
 					<ul class="nav nav-sidebar">
-						<li><a href="#">TESTING</a></li>
-						<li><a href="#" class="active">TESTING</a></li>
-						<li><a href="#">TESTING</a></li>
-						<li><a href="#">TESTING</a></li>
+						<li><a href="{{ req.base }}/"{% if section == 'dashboard' %} class="active"{% endif %}><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
+						<li><a href="#">Section 2</a></li>
+						<li><a href="#">Section 3</a></li>
+						<li><a href="#">Section 4</a></li>
 					</ul>
 				</div>
 				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">

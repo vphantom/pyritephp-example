@@ -70,6 +70,7 @@ on(
         };
         if (isGuest()) return;
         // TODO: Your application's authenticated interface starts here.
+        trigger('section', 'dashboard');
         echo "<p>Dashboard will go here</p>\n";
     }
 );
