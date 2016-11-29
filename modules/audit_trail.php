@@ -44,6 +44,7 @@ class AuditTrail
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 userId INTEGER NOT NULL DEFAULT '0',
+                ip VARCHAR(16) NOT NULL DEFAULT '127.0.0.1',
                 objectType VARCHAR(64) DEFAULT NULL,
                 objectId INTEGER DEFAULT NULL,
                 action VARCHAR(64) NOT NULL DEFAULT '',
@@ -54,47 +55,79 @@ class AuditTrail
             "
         );
         $db->commit();
+        self::add(null, null, 'installed');
         echo "    done!\n";
     }
 
     /**
      * Add a new transaction to the audit trail
      *
-     * The following keys must be defined in $args:
+     * Suggested minimum set of actions:
      *
-     * action     - Type of action performed
+     *     created
+     *     modified
+     *     deleted
      *
-     * The following keys may be defined in $args:
+     * You can either use these positional arguments or specify a single
+     * associative array argument with only the keys you need defined.
      *
-     * objectType - Class of object this applies to
-     * objectId   - Specific instance acted upon
-     * fieldName  - Name of specific field affected
-     * oldValue   - Previous value for affected field
-     * newValue   - New value for affected field
+     * At least an action should be specified (i.e. 'rebooted', perhaps) and
+     * typically also objectType and objectId.  The rest is accessory.
      *
-     * @param array $args Details of the transaction
+     * @param array|string    $objectType Class of object this applies to (*or args, see above)
+     * @param string|int|null $objectId   Specific instance acted upon
+     * @param string          $action     Type of action performed
+     * @param string|null     $fieldName  Specific field affected
+     * @param string|int|null $oldValue   Previous value for affected field
+     * @param string|int|null $newValue   New value for affected field
      *
      * @return null
      */
-    public static function add($args)
+    public static function add($objectType, $objectId = null, $action = null, $fieldName = null, $oldValue = null, $newValue = null)
     {
         global $PPHP;
         $db = $PPHP['db'];
-        $user = User::whoami();
+
+        $userId = 0;
+        if (isset($_SESSION['user']['id'])) {
+            $userId = $_SESSION['user']['id'];
+        };
+
+        $ip = '127.0.0.1';
+        $req = grab('request');
+        if (isset($req['remote_addr'])) {
+            $ip = $req['remote_addr'];
+        };
+
+        // First argument could contain named arguments
+        if (is_array($objectType)) {
+            if (isset($objectType['objectId']))  $objectId  = $objectType['objectId'];
+            if (isset($objectType['action']))    $action    = $objectType['action'];
+            if (isset($objectType['fieldName'])) $fieldName = $objectType['fieldName'];
+            if (isset($objectType['oldValue']))  $oldValue  = $objectType['oldValue'];
+            if (isset($objectType['newValue']))  $newValue  = $objectType['newValue'];
+            if (isset($objectType['objectType'])) {
+                $objectType = $objectType['objectType'];
+            } else {
+                $objectType = null;
+            };
+        };
+
         $db->exec(
             "
             INSERT INTO transactions
-            (userId, objectType, objectId, action, fieldName, oldValue, newValue)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            (userId, ip, objectType, objectId, action, fieldName, oldValue, newValue)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ",
             array(
-                $user['id'],
-                (isset($args['objectType']) ? $args['objectType'] : null),
-                (isset($args['objectId'])   ? $args['objectId'] : null),
-                (isset($args['action'])     ? $args['action'] : null),
-                (isset($args['fieldName'])  ? $args['fieldName'] : null),
-                (isset($args['oldValue'])   ? $args['oldValue'] : null),
-                (isset($args['newValue'])   ? $args['newValue'] : null)
+                $userId,
+                $ip,
+                $objectType,
+                $objectId,
+                $action,
+                $fieldName,
+                $oldValue,
+                $newValue
             )
         );
     }
