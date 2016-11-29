@@ -11,6 +11,7 @@ Simple event-driven framework for creating PHP 5 applications backed by a PDO da
 * Form displays are tied to the current session to elimiate duplicate submissions and further reduce the risks associated with session hijacking and scripted attacks;
 * New users require e-mail confirmation to become active;
 * E-mail and password changes require password re-entry and trigger e-mail notifications;
+* Registration and password reset processes don't leak whether an e-mail is already signed up;
 * Covering 98% of users, forms are validated client-side to improve responsiveness.
 
 Just use this repo as your starting point, modify this file and the contents of `modules/` and `templates/` to suit your needs.  The rest of the developer documentation can be found in [Developers](DEVELOPERS.md).
