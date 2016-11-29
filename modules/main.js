@@ -3,10 +3,15 @@
 var $ = global.jQuery = require('jquery');
 var bootstrap = require('bootstrap');  // eslint-disable-line no-unused-vars
 var parsley = require('parsleyjs');  // eslint-disable-line no-unused-vars
+var timeago = require('timeago.js');  // eslint-disable-line no-unused-vars
+
+// Non-English locales for timeago.js
+// (This is necessary so that Browserify bundles them all at build time.)
+timeago.register('fr', require('timeago.js/locales/fr'));
 
 // Add all useful non-English locales to Parsley
 // (This is necessary so that Browserify bundles them all at build time.)
-// require('parsleyjs/dist/i18n/fr');
+require('parsleyjs/dist/i18n/fr');
 
 $().ready(function() {
   // Get language code from HTML tag
@@ -72,5 +77,8 @@ $().ready(function() {
     errorsWrapper  : '<span class="help-block"></span>',
     errorTemplate  : '<span></span>'
   });
+
+  // Initialize timeago.js
+  new timeago().render($('.timeago'), lang);  // eslint-disable-line new-cap
 });
 

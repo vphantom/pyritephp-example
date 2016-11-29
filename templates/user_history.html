@@ -5,7 +5,6 @@
 		<tbody>
 			{% for tx in history %}
 			<tr{% if tx.action == 'modified' and (tx.fieldName=='email' or tx.fieldName=='password') %} class="warning"{% endif %}>
-				<td class="fit">{{ tx.localtimestamp }} ({{ lib.format_ip(tx.ip) }})</td>
 				<td>
 					{% if tx.userId == session.user.id %}
 						I
@@ -22,6 +21,7 @@
 						{{ tx.action }} {{ tx.fieldName }}
 					{% endif %}
 				</td>
+				<td class="fit"><span class="timeago" datetime="{{ tx.localtimestamp }}">{{ tx.localtimestamp }}</span> ({{ lib.format_ip(tx.ip) }})</td>
 			</tr>
 			{% endfor %}
 		</tbody>
