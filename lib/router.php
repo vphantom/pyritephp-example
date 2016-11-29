@@ -79,6 +79,15 @@ class Router
             array_shift(self::$_PATH);
         };
 
+        // Eat up initial directory as language if it's 2 characters
+        $lang = $PPHP['config']['global']['default_lang'];
+        if (isset(self::$_PATH[0]) && strlen(self::$_PATH[0]) === 2) {
+            $lang = strtolower(array_shift(self::$_PATH));
+        };
+        self::$_req['lang'] = $lang;
+        self::$_req['default_lang'] = $PPHP['config']['global']['default_lang'];
+        self::$_req['base'] = ($lang === $PPHP['config']['global']['default_lang'] ? '' : "/{$lang}");
+
         self::$_req['path'] = implode('/', self::$_PATH);
         self::$_req['query'] = ($_SERVER['QUERY_STRING'] !== '' ? '?' . $_SERVER['QUERY_STRING'] : '');
         self::$_req['host'] = $_SERVER['HTTP_HOST'];
@@ -111,15 +120,7 @@ class Router
     {
         global $PPHP;
 
-        // Eat up initial directory as language if it's 2 characters
-        $lang = $PPHP['config']['global']['default_lang'];
-        if (isset(self::$_PATH[0]) && strlen(self::$_PATH[0]) === 2) {
-            $lang = strtolower(array_shift(self::$_PATH));
-        };
-        self::$_req['lang'] = $lang;
-        self::$_req['default_lang'] = $PPHP['config']['global']['default_lang'];
-        self::$_req['base'] = ($lang === $PPHP['config']['global']['default_lang'] ? '' : "/{$lang}");
-        trigger('language', $lang);
+        trigger('language', self::$_req['lang']);
 
         if (isset(self::$_PATH[1]) && listeners('route/' . self::$_PATH[0] . '+' . self::$_PATH[1])) {
             self::$_base = array_shift(self::$_PATH) . '+' . array_shift(self::$_PATH);
