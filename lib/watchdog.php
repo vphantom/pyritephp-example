@@ -100,7 +100,7 @@ class ErrorHandler
             'URI'           => $_SERVER['REQUEST_URI'],
             'Path info'     => $_SERVER['PATH_INFO'],
             'Method'        => $_SERVER['REQUEST_METHOD'],
-            'Referer'       => $_SERVER['HTTP_REFERER'],
+            'Referer'       => (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : ''),
             'Cookie'        => $_SERVER['HTTP_COOKIE']
         );
         foreach ($info as $name => $val) {

@@ -232,9 +232,12 @@ class PDB
      * create a whitelist.  It is thus safe to pass a form result directly to
      * $values.
      *
+     * Also, note that if you want to append custom column assignments, it is
+     * up to you to prepend ", " to $tail before your WHERE clause.
+     *
      * @param string $table    Name of table to update
      * @param array  $values   Associative list of columns/values to set
-     * @param string $tail     Final part of SQL query (i.e. a WHERE clause)
+     * @param string $tail     Final part of SQL query (i.e. custom columns, WHERE clause)
      * @param array  $tailArgs (Optional) List of values corresponding to placeholders in $tail
      *
      * @return mixed Last ID if supported/available, false on failure
