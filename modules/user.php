@@ -225,7 +225,9 @@ class User
             $onetime = md5(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
             $cols['onetimeHash'] = password_hash($onetime, PASSWORD_DEFAULT);
         };
-        $result = $db->insert('users', $cols);
+        if (($result = $db->insert('users', $cols)) !== false) {
+            trigger('log', 'user', $result, 'created');
+        };
         return ($result && $onetime !== null) ? $onetime : $result;
     }
 }
