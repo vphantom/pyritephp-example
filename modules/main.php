@@ -192,11 +192,11 @@ on(
             $_POST['onetime'] = true;
             if (($onetime = grab('user_create', $_POST)) !== false) {
                 $success = true;
-                $link = http_build_query(array( 'email' => $_POST['email'], 'onetime' => $onetime));
+                $link = 'login?' . http_build_query(array( 'email' => $_POST['email'], 'onetime' => $onetime));
                 trigger(
                     'email_send',
                     "{$_POST['name']} <{$_POST['email']}>",
-                    'newaccount',
+                    'confirmlink',
                     array(
                         'validation_link' => $link
                     )
@@ -209,6 +209,90 @@ on(
             array(
                 'created' => $created,
                 'success' => $success
+            )
+        );
+    }
+);
+
+on(
+    'route/password_reset',
+    function () {
+        $inprogress = false;
+        $emailed = false;
+        $saved = false;
+        $valid = false;
+        $success = false;
+        $email = '';
+        $onetime = '';
+
+        /*
+         * 1.1: Display form
+         * 1.2: Using form's $email, generate one-time password and e-mail it if user is valid
+         * 2.1: From e-mailed link, display password update form if one-time password checks out
+         *      Generate yet another one-time password for that form, because ours expired upon verification
+         * 2.2: From update form, update user's password if one-time password checks out
+         *
+         * This is because A) we can trust 'email' but not an ID from such a
+         * public form, B) we want to keep the form tied to the user at all
+         * times and C) we don't want to authenticate the user in $_SESSION at
+         * this stage.
+         */
+
+        if (isset($_POST['email']) && isset($_POST['onetime']) && isset($_POST['newpassword1']) && isset($_POST['newpassword2'])) {
+            // 2.2 Form submitted from a valid onetime
+            $inprogress = true;
+            $saved = true;
+            if (($user = grab('authenticate', $_POST['email'], null, $_POST['onetime'])) !== false) {
+                $success = pass(
+                    'user_update',
+                    $user['id'],
+                    array(
+                        'newpassword1' => $_POST['newpassword1'],
+                        'newpassword2' => $_POST['newpassword2']
+                    )
+                );
+            };
+        } elseif (isset($_POST['email'])) {
+            // 1.2 Form submitted to tell us whom to reset
+            $emailed = true;
+            $success = true;  // Always pretend it worked
+            if (($user = grab('user_fromemail', $_POST['email'])) !== false) {
+                if (($onetime = grab('user_update', $user['id'], array('onetime' => true))) !== false) {
+                    $link = 'password_reset?' . http_build_query(array( 'email' => $_POST['email'], 'onetime' => $onetime));
+                    trigger(
+                        'email_send',
+                        "{$user['name']} <{$_POST['email']}>",
+                        'confirmlink',
+                        array(
+                            'validation_link' => $link
+                        )
+                    );
+                };
+            };
+        } elseif (isset($_GET['email']) && isset($_GET['onetime'])) {
+            // 2.1 Link from e-mail clicked, display form if onetime valid
+            $inprogress = true;
+            $saved = false;
+            $email = cleanEmail($_GET['email']);
+            if (($user = grab('authenticate', $_GET['email'], null, $_GET['onetime'])) !== false) {
+                $valid = true;
+                if (($onetime = grab('user_update', $user['id'], array('onetime' => true))) === false) {
+                    $onetime = '';
+                };
+            };
+        };
+
+        trigger(
+            'render',
+            'password_reset.html',
+            array(
+                'inprogress' => $inprogress,
+                'emailed'    => $emailed,
+                'saved'      => $saved,
+                'valid'      => $valid,
+                'success'    => $success,
+                'email'      => $email,
+                'onetime'    => $onetime
             )
         );
     }

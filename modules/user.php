@@ -25,6 +25,7 @@
  */
 class User
 {
+    private static $_selectFrom = "SELECT *, CAST((julianday('now') - julianday(onetimeTime)) * 24 * 3600 AS INTEGER) AS onetimeElapsed FROM users";
 
     /**
      * Create database tables if necessary
@@ -42,8 +43,9 @@ class User
             CREATE TABLE IF NOT EXISTS 'users' (
                 id           INTEGER PRIMARY KEY AUTOINCREMENT,
                 email        VARCHAR(255) NOT NULL DEFAULT '',
-                passwordHash VARCHAR(255) NOT NULL DEFAULT '',
-                onetimeHash  VARCHAR(255) NOT NULL DEFAULT '',
+                passwordHash VARCHAR(255) NOT NULL DEFAULT '*',
+                onetimeHash  VARCHAR(255) NOT NULL DEFAULT '*',
+                onetimeTime  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 name         VARCHAR(255) NOT NULL DEFAULT ''
             )
             "
@@ -85,10 +87,28 @@ class User
     }
 
     /**
+     * Load a user by e-mail
+     *
+     * @param string $email E-mail address
+     *
+     * @return array|bool Associative array for the user or false if not found
+     */
+    public static function fromEmail($email)
+    {
+        global $PPHP;
+        $db = $PPHP['db'];
+        if ($user = $db->selectSingleArray(self::$_selectFrom . " WHERE email=?", array($email))) {
+            return $user;
+        };
+        return false;
+    }
+
+    /**
      * Load and authenticate a user
      *
-     * If the user has a one-time password set, using a regular password will
-     * fail.
+     * Does not trigger any events, so it is safe to use for temporary user
+     * manipulation.  Authenticating using $onetime, however, immediately
+     * invalidates that password.
      *
      * @param string $email    E-mail address
      * @param string $password Plain text password (supplied via web form)
@@ -100,18 +120,17 @@ class User
     {
         global $PPHP;
         $db = $PPHP['db'];
+        $onetimeMax = $PPHP['config']['global']['onetime_lifetime'] * 60;
 
-        if ($user = $db->selectSingleArray("SELECT * FROM users WHERE email=?", array($email))) {
-
+        if (($user = self::fromEmail($email)) !== false) {
             if ($onetime !== '') {
-                if (password_verify($onetime, $user['onetimeHash'])) {
-                    $db->update('users', array('onetimeHash' => ''), 'WHERE id=?', array($user['id']));
+                if ($user['onetimeElapsed'] < $onetimeMax  &&  password_verify($onetime, $user['onetimeHash'])) {
+                    // Invalidate immediately, don't wait for expiration
+                    $db->update('users', array('onetimeHash' => '*'), 'WHERE id=?', array($user['id']));
                     return $user;
                 };
             } else {
-                if ($user['onetimeHash'] === ''
-                    &&  password_verify($password, $user['passwordHash'])
-                ) {
+                if (password_verify($password, $user['passwordHash'])) {
                     return $user;
                 };
             };
@@ -128,10 +147,13 @@ class User
      * Special keys 'newpassword1' and 'newpassword2' trigger a re-computing
      * of 'passwordHash'.
      *
+     * Special key 'onetime' triggers the creation of a new onetime token and
+     * its 'onetimeHash', resets 'onetimeTime'.
+     *
      * @param int   $id   ID of the user to update
      * @param array $cols Associative array of columns to update
      *
-     * @return bool Whether it succeeded
+     * @return string|bool Whether it succeeded, the one time token if appropriate
      */
     public static function update($id, $cols = array())
     {
@@ -150,15 +172,22 @@ class User
             $cols['passwordHash'] = password_hash($cols['newpassword1'], PASSWORD_DEFAULT);
             // Entries 'newpassword[12]' will be safely skipped by $db->update()
         };
+        $ott = '';
+        $onetime = null;
+        if (isset($cols['onetime'])) {
+            $ott = ", onetimeTime=datetime('now') ";
+            $onetime = md5(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
+            $cols['onetimeHash'] = password_hash($onetime, PASSWORD_DEFAULT);
+        };
         $result = $db->update(
             'users',
             $cols,
-            'WHERE id=?',
+            $ott . 'WHERE id=?',
             array($id)
         );
         if ($result) {
-            trigger('user_changed', $db->selectSingleArray("SELECT * FROM users WHERE id=?", array($id)));
-            return true;
+            trigger('user_changed', $db->selectSingleArray(self::$_selectFrom . " WHERE id=?", array($id)));
+            return ($onetime !== null ? $onetime : true);
         };
 
         return false;
@@ -173,18 +202,17 @@ class User
      * being inserted directly.
      *
      * If special key 'onetime' is present, it will trigger the generation of
-     * a one time password, which will be required for the user's next login
-     * instead of a regular password and will be returned instead of the new
-     * user ID.
+     * a one time password, which will be returned instead of the new user ID.
      *
      * @param array $cols Associative array of columns to set
      *
-     * @return bool|int New ID on success, false on failure
+     * @return string|bool|int New ID on success, false on failure
      */
     public static function create($cols = array())
     {
         global $PPHP;
         $db = $PPHP['db'];
+        $onetime = null;
 
         if (isset($cols['id'])) {
             unset($cols['id']);
@@ -198,11 +226,12 @@ class User
             $cols['onetimeHash'] = password_hash($onetime, PASSWORD_DEFAULT);
         };
         $result = $db->insert('users', $cols);
-        return ($result && isset($cols['onetime']) ? $onetime : $result);
+        return ($result && $onetime !== null) ? $onetime : $result;
     }
 }
 
 on('install', 'User::install');
+on('user_fromemail', 'User::fromEmail');
 on('authenticate', 'User::login');
 on('user_update', 'User::update');
 on('user_create', 'User::create');
