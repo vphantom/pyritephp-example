@@ -160,6 +160,12 @@ on(
                             'editaccount'
                         );
                     };
+                    if ($oldEmail !== $newEmail) {
+                        trigger('log', 'user', $_SESSION['user']['id'], 'modified', 'email', $oldEmail, $newEmail);
+                    };
+                    if (strlen($_POST['newpassword1']) >= 8) {
+                        trigger('log', 'user', $_SESSION['user']['id'], 'modified', 'password');
+                    };
                 };
             };
         };
