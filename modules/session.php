@@ -131,7 +131,7 @@ class Session
             $_SESSION['user'] = $user;
             $_SESSION['identified'] = true;
             trigger('newuser');
-            trigger('log', null, null, 'login');
+            trigger('log', 'user', $user['id'], 'login');
             return true;
         } else {
             return false;

@@ -182,6 +182,31 @@ on(
 );
 
 on(
+    'route/user+history',
+    function () {
+        if (isGuest()) return;
+        $history = grab(
+            'history',
+            array(
+                'objectType' => 'user',
+                'objectId' => $_SESSION['user']['id'],
+                'userId' => $_SESSION['user']['id'],
+                'order' => 'DESC',
+                'max' => 100
+            )
+        );
+        trigger(
+            'render',
+            'user_history.html',
+            array(
+                'history' => $history,
+                'cols' => array_keys($history[0])
+            )
+        );
+    }
+);
+
+on(
     'route/register',
     function () {
         $created = false;

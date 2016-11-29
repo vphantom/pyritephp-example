@@ -148,10 +148,12 @@ class AuditTrail
      * @param string|int|null $objectId   Specific instance acted upon
      * @param string          $action     Type of action performed
      * @param string|null     $fieldName  Specific field affected
+     * @param string|null     $order      Either 'DESC' or 'ASC'
+     * @param int|null        $max        LIMIT rows returned
      *
      * @return array List of associative arrays, one per entry
      */
-    public static function get($userId, $objectType = null, $objectId = null, $action = null, $fieldName = null)
+    public static function get($userId, $objectType = null, $objectId = null, $action = null, $fieldName = null, $order = 'ASC', $max = null)
     {
         global $PPHP;
         $db = $PPHP['db'];
@@ -159,6 +161,14 @@ class AuditTrail
         $args = array();
         if (is_array($userId)) {
             $args = $userId;
+            if (isset($args['order'])) {
+                $order = $args['order'];
+                unset($args['order']);
+            };
+            if (isset($args['max'])) {
+                $max = $args['max'];
+                unset($args['max']);
+            };
         } else {
             if ($userId !== null)     $args['userId']     = $userId;
             if ($objectType !== null) $args['objectType'] = $objectType;
@@ -171,7 +181,7 @@ class AuditTrail
             return array();
         };
 
-        $query = "SELECT * FROM transactions WHERE ";
+        $query = "SELECT *, datetime(timestamp, 'localtime') AS localtimestamp FROM transactions WHERE ";
         $queryArgs = array();
         $queryChunks = array();
         foreach ($args as $key => $val) {
@@ -179,7 +189,10 @@ class AuditTrail
             $queryArgs[] = $val;
         };
         $query .= implode(' AND ', $queryChunks);
-        $query .= " ORDER BY timestamp ASC";
+        $query .= " ORDER BY id {$order}";
+        if ($max !== null) {
+            $query .= " LIMIT {$max}";
+        };
 
         return $db->selectArray($query, $queryArgs);
     }

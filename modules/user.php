@@ -226,7 +226,6 @@ class User
             $cols['onetimeHash'] = password_hash($onetime, PASSWORD_DEFAULT);
         };
         if (($result = $db->insert('users', $cols)) !== false) {
-            trigger('log', 'user', $result, 'created');
             trigger(
                 'log',
                 array(
