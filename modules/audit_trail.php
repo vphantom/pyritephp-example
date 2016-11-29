@@ -140,6 +140,9 @@ class AuditTrail
      * restriction is required; it is not allowed to load the entire global
      * history at once.
      *
+     * Note that 'timestamp' is in UTC and 'localtimestamp' is added to the
+     * results in the server's local timezone for convenience.
+     *
      * You can either use these positional arguments or specify a single
      * associative array argument with only the keys you need defined.
      *
