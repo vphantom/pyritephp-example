@@ -58,6 +58,9 @@ class ACL
         if (!$db->selectAtom("SELECT role FROM acl_roles WHERE role='admin'")) {
             $db->exec("INSERT INTO acl_roles VALUES ('admin', '*', '*', '0')");
         };
+        if (!$db->selectAtom("SELECT role FROM acl_roles WHERE role='member'")) {
+            $db->exec("INSERT INTO acl_roles VALUES ('member', 'login '*', '0')");
+        };
 
         $db->exec(
             "
@@ -203,9 +206,154 @@ class ACL
 
         return false;
     }
+
+    /**
+     * Grant new right or role membership
+     *
+     * Three possible signatures:
+     *
+     * $userId, $role
+     * ...grants role to user
+     *
+     * $userId, null, $action[, $objectType[, $objectId]]
+     * ...grants right to user
+     *
+     * null, $role, $action[, $objectType[, $objectId]]
+     * ...grants right to role
+     *
+     * @param int|null    $userId     User ID
+     * @param string|null $role       Role
+     * @param string|null $action     Action
+     * @param string|null $objectType Object class
+     * @param int|null    $objectId   Object ID
+     *
+     * @return bool Result of operation
+     */
+    public static function grant($userId = null, $role = null, $action = null, $objectType = '*', $objectId = 0)
+    {
+        global $PPHP;
+        $db = $PPHP['db'];
+
+        if ($userId !== null  &&  $role !== null) {
+            return $db->insert(
+                'users_roles',
+                array(
+                    'userId' => $userId,
+                    'role'   => $role
+                )
+            );
+        } elseif ($userId !== null  &&  $action !== null) {
+            return $db->insert(
+                'acl_users',
+                array(
+                    'userId'     => $userId,
+                    'action'     => $action,
+                    'objectType' => $objectType,
+                    'objectId'   => $objectId
+                )
+            );
+        } elseif ($role !== null  &&  $action !== null) {
+            return $db->insert(
+                'acl_roles',
+                array(
+                    'role'       => $role,
+                    'action'     => $action,
+                    'objectType' => $objectType,
+                    'objectId'   => $objectId
+                )
+            );
+        };
+
+        return false;
+    }
+
+    /**
+     * Revoke existing right or role membership
+     *
+     * Three possible signatures:
+     *
+     * $userId, $role
+     * ...removes role from user
+     *
+     * $userId, null, $action[, $objectType[, $objectId]]
+     * ... removes right from user
+     *
+     * null, $role, $action[, $objectType[, $objectId]]
+     * ...removes right from role
+     *
+     * @param int|null    $userId     User ID
+     * @param string|null $role       Role
+     * @param string|null $action     Action
+     * @param string|null $objectType Object class
+     * @param int|null    $objectId   Object ID
+     *
+     * @return bool|int Result of operation
+     */
+    public static function revoke($userId = null, $role = null, $action = null, $objectType = '*', $objectId = 0)
+    {
+        global $PPHP;
+        $db = $PPHP['db'];
+
+        if ($userId !== null  &&  $role !== null) {
+            return $db->exec(
+                "
+                DELETE FROM users_roles WHERE userId=? AND role=?
+                ",
+                array(
+                    $userId,
+                    $role
+                )
+            );
+        } elseif ($userId !== null  &&  $action !== null) {
+            return $db->exec(
+                "
+                DELETE FROM acl_users
+                WHERE userId=? AND action=? AND objectType=? AND objectId=?
+                ",
+                array(
+                    $userId,
+                    $action,
+                    $objectType,
+                    $objectId
+                )
+            );
+        } elseif ($role !== null  &&  $action !== null) {
+            return $db->exec(
+                "
+                DELETE FROM acl_roles
+                WHERE role=? AND action=? AND objectType=? AND objectId=?
+                ",
+                array(
+                    $role,
+                    $action,
+                    $objectType,
+                    $objectId
+                )
+            );
+        };
+
+        return false;
+    }
+
+    /**
+     * Get roles for a user
+     *
+     * @param int $userId User ID
+     *
+     * @return array Any roles found
+     */
+    public static function getRoles($userId)
+    {
+        global $PPHP;
+        $db = $PPHP['db'];
+        $roles = $db->selectList("SELECT role FROM users_roles WHERE userId=?", array($userId));
+        return $roles !== false ? $roles : array();
+    }
 }
 
 on('install', 'ACL::install');
 on('newuser', 'ACL::reload');
 on('can',     'ACL::can');
-
+on('grant',   'ACL::grant');
+on('revoke',  'ACL::revoke');
+on('user_roles', 'ACL::getRoles');
