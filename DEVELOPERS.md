@@ -123,7 +123,7 @@ Templates are located in `templates/xx/` where `xx` is a lowercase language code
 
 Utility template `templates/lib` is loaded automatically and available globally as `lib`.  For example, `lib.alert()`.
 
-Most templates except `lib` and `layout.html` can call `title()` to prepend a section to the page's title, which will be used in `layout.html`.  They can also use `section()` to override the name of the current section, which `layout.html` uses for the navigation sidebar.
+Most templates except `lib` and `layout.html` can call `title()` to prepend a section to the page's title, which will be used in `layout.html`.
 
 A single template file is mandatory: `layout.html` which is divided into three blocks:
 

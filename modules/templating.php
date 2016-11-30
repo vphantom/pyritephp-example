@@ -27,7 +27,6 @@ class Twigger
 {
     private static $_twig;
     private static $_title = '';
-    private static $_section = false;
     private static $_status = 200;
     private static $_template;
     private static $_safeBody = '';
@@ -95,13 +94,6 @@ class Twigger
                 }
             )
         );
-        $twig->addFunction(
-            new \Twig_SimpleFunction(
-                'section', function () {
-                    return call_user_func_array('self::section', func_get_args());
-                }
-            )
-        );
 
         // Load utilities globally
         try {
@@ -146,7 +138,6 @@ class Twigger
                 'body',
                 array(
                     'title' => self::$_title,
-                    'section' => self::$_section,
                     'body' => self::$_safeBody,
                     'stdout' => $body,
                     'session' => $_SESSION,
@@ -195,21 +186,6 @@ class Twigger
     public static function title($prepend, $sep = ' - ')
     {
         self::$_title = $prepend . (self::$_title !== '' ? ($sep . self::$_title) : '');
-    }
-
-    /**
-     * Overwrite name of current section
-     *
-     * We're using this in navigation to decide which section to
-     * highlight/expand.
-     *
-     * @param string $section Name of section
-     *
-     * @return null
-     */
-    public static function section($section)
-    {
-        self::$_section = $section;
     }
 
     /**
@@ -273,6 +249,5 @@ on('shutdown', 'Twigger::shutdown', 1);
 on('render', 'Twigger::render');
 on('render_blocks', 'Twigger::renderBlocks');
 on('title', 'Twigger::title');
-on('section', 'Twigger::section');
 on('http_status', 'Twigger::status');
 on('language', 'Twigger::setLang');
