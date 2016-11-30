@@ -83,10 +83,38 @@
 				<div class="container main">
 		{% endif %}
 
-			{% if req.status == 404 %}
+			{% if req.status >= 400 %}
 				<div class="jumbotron">
-					<h1>Not Found</h1>
-					<p>This resource cannot be found at the moment.  You might want to go back one page from here.</p>
+					{% if req.status == 404 %}
+						<h1>Not Found</h1>
+						<p>This resource cannot be found right now.  You might want to go back one page from here.</p>
+					{% elseif req.status == 403 %}
+						{% if session.identified %}
+							<h1>Unauthorized</h1>
+							<p>Your current permissions do not give you access to this resource.</p>
+						{% else %}
+							{% if req.get.onetime %}
+								<h1>Account Activation Failed</h1>
+								<p>The activation link has expired or is otherwise invalid.</p>
+							{% elseif req.post.email %}
+								<h1>Login Failed</h1>
+								<p>The e-mail address and password combination that you entered is incorrect.</p>
+							{% else %}
+								<h1>Welcome to PyritePHP!</h1>
+							{% endif %}
+							<p>In order to use this application, you need to log in to your account here.  If you don't have an account yet, please consider registering.</p>
+							<p><a class="btn btn-primary btn-lg" type="button" href="{{ req.base }}/register">Register &raquo;</a></p>
+							<p>If you already have an account and forgot your password, <a href="{{ req.base }}/password_reset">click here</a>.</p>
+						{% endif %}
+					{% elseif req.status == 440 %}
+						{% if session.identified %}
+							<h1>Duplicate Submission</h1>
+							<p>It seems your browser had already submitted this form.  If you were submitting new information, you might have to fill it out again.</p>
+						{% else %}
+							<h1>Session Expired</h1>
+							<p>Please sign in again.</p>
+						{% endif %}
+					{% endif %}
 				</div>
 			{% endif %}
 			{{ body |raw }}

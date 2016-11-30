@@ -49,7 +49,7 @@ Given class `form-horizontal`, each of a form's inputs and buttons will become i
 
 ## Templating
 
-All templates have variables `session` and `post` equivalent to `$_SESSION` and `$_POST`, as well as `grab()`, `pass()` and `filter()` from the PHP side and the special variable `req` with details about the current request.
+All templates have variable `session` equivalent to `$_SESSION`, as well as `grab()`, `pass()` and `filter()` from the PHP side and the special variable `req` with details about the current request.
 
 ### Common variables
 
@@ -89,7 +89,11 @@ Current query string, including leading '?'.  Since forms should normally use th
 <a href="{{ req.base }}/{{ req.path }}{{ req.query }}">...</a>
 ```
 
-### req.remote_addr
+#### req.get / req.post
+
+Equivalents to PHP's `$_GET[]` and `$_POST[]`.
+
+#### req.remote_addr
 
 The browser's IP address, as gathered from various PHP and HTTP header information, including common proxy headers.
 

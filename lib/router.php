@@ -103,6 +103,8 @@ class Router
                 (isset($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on')
             );
         self::$_req['protocol'] = (self::$_req['ssl'] ? 'https' : 'http');
+        self::$_req['get'] = $_GET;
+        self::$_req['post'] = $_POST;
 
     }
 

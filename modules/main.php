@@ -26,7 +26,6 @@ function isGuest()
 {
     if (!$_SESSION['identified']) {
         trigger('http_status', 403);
-        trigger('render', 'anonymous.html');
         return true;
     };
     return false;
@@ -64,10 +63,6 @@ function cleanText($string)
 on(
     'route/main',
     function () {
-        if (!$_SESSION['identified']) {
-            trigger('render', 'anonymous.html');
-            return;
-        };
         if (isGuest()) return;
         // TODO: Your application's authenticated interface starts here.
         trigger('section', 'dashboard');
@@ -84,22 +79,16 @@ on(
 
             // Account creation validation link
             if (!pass('login', $_GET['email'], null, $_GET['onetime'])) {
-                trigger('http_status', 403);
-                trigger('render', 'anonymous.html', array('onetime' => true));
-                return;
+                return trigger('http_status', 403);
             };
         } else {
 
             // Normal login
             if (!pass('form_validate', 'login-form')) {
-                trigger('http_status', 440);
-                trigger('render', 'anonymous.html');
-                return;
+                return trigger('http_status', 440);
             };
             if (!pass('login', $_POST['email'], $_POST['password'])) {
-                trigger('http_status', 403);
-                trigger('render', 'anonymous.html', array('try_again' => true));
-                return;
+                return trigger('http_status', 403);
             };
         };
 
@@ -126,9 +115,7 @@ on(
         // Settings & Information
         if (isset($_POST['name'])) {
             if (!pass('form_validate', 'user_prefs')) {
-                trigger('http_status', 440);
-                trigger('render', 'anonymous.html');
-                return;
+                return trigger('http_status', 440);
             };
             $saved = true;
             $_POST['name'] = cleanText($_POST['name']);
@@ -139,9 +126,7 @@ on(
         if (isset($_POST['email'])) {
             $_POST['email'] = cleanEmail($_POST['email']);
             if (!pass('form_validate', 'user_passmail')) {
-                trigger('http_status', 440);
-                trigger('render', 'anonymous.html');
-                return;
+                return trigger('http_status', 440);
             };
             $saved = true;
             $oldEmail = cleanEmail($_SESSION['user']['email']);
@@ -214,9 +199,7 @@ on(
         $success = false;
         if (isset($_POST['email'])) {
             if (!pass('form_validate', 'registration')) {
-                trigger('http_status', 440);
-                trigger('render', 'anonymous.html');
-                return;
+                return trigger('http_status', 440);
             };
             $created = true;
             $_POST['email'] = cleanEmail($_POST['email']);

@@ -122,8 +122,7 @@ class Twigger
                 'head',
                 array(
                     'session' => $_SESSION,
-                    'req' => grab('request'),
-                    'post' => $_POST
+                    'req' => grab('request')
                 )
             );
         } catch (Exception $e) {
@@ -151,8 +150,7 @@ class Twigger
                     'body' => self::$_safeBody,
                     'stdout' => $body,
                     'session' => $_SESSION,
-                    'req' => grab('request'),
-                    'post' => $_POST
+                    'req' => grab('request')
                 )
             );
         } catch (Exception $e) {
@@ -229,8 +227,7 @@ class Twigger
             array(
                 'title' => self::$_title,
                 'session' => $_SESSION,
-                'req' => grab('request'),
-                'post' => $_POST
+                'req' => grab('request')
             )
         );
         try {
@@ -254,8 +251,7 @@ class Twigger
             $args,
             array(
                 'session' => $_SESSION,
-                'req' => grab('request'),
-                'post' => $_POST
+                'req' => grab('request')
             )
         );
         try {
