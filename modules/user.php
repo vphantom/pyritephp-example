@@ -153,6 +153,8 @@ class User
                 if ($user['onetimeElapsed'] < $onetimeMax  &&  password_verify($onetime, $user['onetimeHash'])) {
                     // Invalidate immediately, don't wait for expiration
                     $db->update('users', array('onetimeHash' => '*'), 'WHERE id=?', array($user['id']));
+                    // Make sure user has role 'member' now that a onetime worked
+                    pass('grant', $user['id'], 'member');
                     return $user;
                 };
             } else {

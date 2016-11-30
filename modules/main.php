@@ -64,6 +64,9 @@ on(
     'route/main',
     function () {
         if (isGuest()) return;
+        if (!pass('can', 'login')) {
+            return trigger('http_status', 403);
+        };
         // TODO: Your application's authenticated interface starts here.
         echo "<p>Dashboard will go here</p>\n";
     }
