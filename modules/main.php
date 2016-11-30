@@ -70,6 +70,28 @@ on(
 );
 
 on(
+    'route/admin',
+    function () {
+        if (isGuest()) return;
+        if (!pass('can', 'admin')) {
+            return trigger('http_status', 403);
+        };
+        echo "<p>An admin dashboard can go here</p>\n";
+    }
+);
+
+on(
+    'route/admin+users',
+    function () {
+        if (isGuest()) return;
+        if (!pass('can', 'admin')) {
+            return trigger('http_status', 403);
+        };
+        echo "<p>User admin dashboard can go here</p>\n";
+    }
+);
+
+on(
     'route/login',
     function () {
         $req = grab('request');

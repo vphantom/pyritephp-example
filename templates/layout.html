@@ -72,8 +72,19 @@
 			<div class="row">
 				<div class="col-sm-3 col-md-2 sidebar">
 					<ul class="nav nav-sidebar">
-						<li><a href="{{ req.base }}/"{% if section == 'dashboard' %} class="active"{% endif %}><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
-						<li><a href="#"><span class="glyphicon glyphicon-wrench"></span> Administration</a></li>
+						<li><a href="{{ req.base }}/"{% if req.path == '' %} class="active"{% endif %}><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
+						{% if pass('can', 'admin') %}
+							<li><a href="/admin"{% if req.path starts with 'admin' %} class="active"{% endif %}><span class="glyphicon glyphicon-wrench"></span> Administration</a>
+								{% if req.path starts with 'admin' %}
+									<ul class="nav nav-second-level">
+										<li><a href="/admin/users"{% if req.path starts with 'admin/users' %} class="active"{% endif %}>Users</a></li>
+										<li><a href="#">Secondary 2</a></li>
+										<li><a href="#">Secondary 3</a></li>
+										<li><a href="#">Secondary 4</a></li>
+									</ul>
+								{% endif %}
+							</li>
+						{% endif %}
 						<li><a href="#">Section 3</a></li>
 						<li><a href="#">Section 4</a></li>
 					</ul>
