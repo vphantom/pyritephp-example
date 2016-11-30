@@ -36,8 +36,7 @@ bin/composer:
 	
 init:	deps bin/composer
 	$(COMPOSER) install
-	@mkdir -p var
-	@mkdir -p var/twig_cache
+	@mkdir -p var/twig_cache var/sessions
 	$(NPM) install --production
 	if [ ! -f var/main.db ]; then $(SQLITE) /dev/null '.save var/main.db'; fi
 	php -f index.php

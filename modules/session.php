@@ -65,12 +65,15 @@ class Session
     {
         global $PPHP;
 
-        $config = $PPHP['config']['session'];
+        $sessionSeconds = $PPHP['config']['session']['gc_maxlifetime'] * 60;
         // Start a PHP-handled session and bind it to the current remote IP address as
         // a precaution per https://www.owasp.org/index.php/PHP_Security_Cheat_Sheet
         // We'll go one step further in _magic() and throw in User Agent details.
-        ini_set('session.gc_maxlifetime', $config['gc_maxlifetime'] * 60);
-        ini_set('session.cookie_lifetime', $config['cookie_lifetime'] * 60);
+        ini_set('session.gc_probability', 1);
+        ini_set('session.gc_gc_divisor', 1000);
+        ini_set('session.gc_maxlifetime', $sessionSeconds);
+        session_save_path(__DIR__ . '/../var/sessions');
+        ini_set('session.cookie_lifetime', 0);  // Session
         ini_set('session.cookie_httponly', true);
         session_start();
         if (isset($_SESSION['magic'])) {
