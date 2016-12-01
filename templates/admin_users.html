@@ -1,6 +1,11 @@
 {{ title('Administration') }}
 {{ title('Users') }}
 <h2>Users</h2>
+<p>
+To create a new user, use the same <a href="{{ req.base }}/register">registration form</a>.
+The user will receive the confirmation e-mail and you will remain logged in.
+</p>
+<h3>List</h3>
 <form id="user_search" method="post" class="form-compact">
 	<input data-label="Name" placeholder="partial name" id="name" value="{{ req.post.name }}" minlength="3">
 	<input data-label="Email" placeholder="partial E-mail address" id="email" value="{{ req.post.email }}" minlength="3">
@@ -24,7 +29,7 @@
 			{% set login = grab('user_seen', user.id) %}
 			<tr>
 				<td class="fit"><a href="{{ req.base }}/{{ req.path }}/edit?id={{ user.id }}"><span class="glyphicon glyphicon-edit"></span></a></td>
-				<td class="fit"><a href="">{{ user.name }}</a></td>
+				<td class="fit"><a href="{{ req.base }}/{{ req.path }}/edit?id={{ user.id }}">{{ user.name }}</a></td>
 				<td class="fit">{{ lib.format_email(user.email) }}</td>
 				<td class="fit">{{ roles |join(', ') }}</td>
 				<td>{{ lib.format_timestamp(login.localtimestamp) }}{% if login.ip %} from {{ lib.format_ip(login.ip) }}{% endif %}</td>

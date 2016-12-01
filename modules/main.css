@@ -21,6 +21,10 @@ body {
 	color: #fff;
 	background-color: #428bca;
 }
+.nav-sidebar .nav-second-level .active, .nav-sidebar .nav-second-level .active:hover {
+	color: #fff;
+	background-color: #529bda;
+}
 .nav-sidebar .nav-second-level {
 	padding-left: 30px;
 }

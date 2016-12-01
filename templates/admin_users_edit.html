@@ -1,0 +1,17 @@
+{{ title('Administration') }}
+{{ title('Users') }}
+{% if saved %}
+	{% if success %}
+		{{ lib.alert(success, "Saved successfully.") }}
+	{% else %}
+		{{ lib.alert(success, "An error occurred while attempting to save.") }}
+	{% endif %}
+{% else %}
+
+	<h2>Details</h2>
+	{% include 'user_edit.html' %}
+
+	<h3>Recent Account History</h3>
+	{% include 'history.html' %}
+
+{% endif %}

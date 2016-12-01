@@ -19,7 +19,7 @@
 						logged in
 
 					{% elseif tx.action == 'created' %}
-						{% if tx.objectType == 'user' and tx.objectId == session.user.id %}
+						{% if tx.objectType == 'user' %}
 							signed up
 						{% else %}
 							created

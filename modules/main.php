@@ -174,7 +174,8 @@ on(
             'user_prefs.html',
             array(
                 'saved' => $saved,
-                'success' => $success
+                'success' => $success,
+                'user' => $_SESSION['user']
             )
         );
     }
@@ -190,7 +191,7 @@ on(
                 'objectType' => 'user',
                 'objectId' => $_SESSION['user']['id'],
                 'order' => 'DESC',
-                'max' => 100
+                'max' => 20
             )
         );
         trigger(

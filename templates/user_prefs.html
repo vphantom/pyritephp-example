@@ -13,11 +13,7 @@
 		Settings &amp; Information
 	</div>
 	<div class="panel-body">
-		<form id="user_prefs" method="post" class="form-auto">
-			{{ filter('form_begin', 'user_prefs') |raw }}
-			<input data-label="Name" type="text" id="name" value="{{ session.user.name }}" required minlength="2" maxlength="100">
-			<button type="submit">Save changes</button>
-		</form>
+		{% include 'user_edit.html' %}
 	</div>
 </div>
 
@@ -29,7 +25,7 @@
 		<form id="user_passmail" method="post" class="form-auto">
 			<p>For your protection, to change either your e-mail address or your password, you will need to re-enter your current password.  A notification will also be e-mailed to you (at both old and new addresses if you changed it).</p>
 			{{ filter('form_begin', 'user_passmail') |raw }}
-			<input data-label="E-mail" type="email" id="email" value="{{ session.user.email }}" required maxlength="100">
+			<input data-label="E-mail" type="email" id="email" value="{{ user.email }}" required maxlength="100">
 			<p>&nbsp;</p>
 			<input data-label="Current password" type="password" id="password" required>
 			<p>&nbsp;</p>

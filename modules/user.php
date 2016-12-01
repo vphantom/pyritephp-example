@@ -187,6 +187,11 @@ class User
     {
         global $PPHP;
         $db = $PPHP['db'];
+        $sessUserId = 0;
+
+        if (isset($_SESSION['user']) && is_array($_SESSION['user'])) {
+            $sessUserId = $_SESSION['user']['id'];
+        };
 
         if (isset($cols['id'])) {
             unset($cols['id']);
@@ -214,7 +219,9 @@ class User
             array($id)
         );
         if ($result) {
-            trigger('user_changed', $db->selectSingleArray(self::$_selectFrom . " WHERE id=?", array($id)));
+            if ($sessUserId === $id) {
+                trigger('user_changed', $db->selectSingleArray(self::$_selectFrom . " WHERE id=?", array($id)));
+            };
             return ($onetime !== null ? $onetime : true);
         };
 
@@ -254,10 +261,14 @@ class User
             $cols['onetimeHash'] = password_hash($onetime, PASSWORD_DEFAULT);
         };
         if (($result = $db->insert('users', $cols)) !== false) {
+            $creator = $result;
+            if (isset($_SESSION['user']) && is_array($_SESSION['user'])) {
+                $creator = $_SESSION['user']['id'];
+            };
             trigger(
                 'log',
                 array(
-                    'userId'     => $result,
+                    'userId'     => $creator,
                     'objectType' => 'user',
                     'objectId'   => $result,
                     'action'     => 'created'
@@ -298,7 +309,7 @@ class User
         if ($email !== null  ||  $name !== null) {
             $where = ' WHERE ' . implode(' AND ', $wheres) . ' ';
         };
-        return $db->selectArray("SELECT id, email, name FROM users {$where} ORDER BY id ASC LIMIT 100", $whereArgs);
+        return $db->selectArray("SELECT id, email, name FROM users {$where} ORDER BY id DESC LIMIT 100", $whereArgs);
     }
 }
 
@@ -314,22 +325,74 @@ on('user_search', 'User::search');
 // Routes
 on(
     'route/admin+users',
-    function () {
+    function ($path) {
         if (!pass('can', 'admin')) {
             return trigger('http_status', 403);
         };
-        $users = User::search(
-            isset($_POST['email']) && strlen($_POST['email']) > 2 ? $_POST['email'] : null,
-            isset($_POST['name']) && strlen($_POST['name']) > 2 ? $_POST['name'] : null
-        );
-        // Paged?
-        // ...this SOOO should be generic for other tables!
-        trigger(
-            'render',
-            'admin_users.html',
-            array(
-                'users' => $users
-            )
-        );
+        $f = array_shift($path);
+        switch ($f) {
+
+        case 'edit':
+            $saved = false;
+            $success = false;
+            $history = array();
+            $user = array();
+
+            if (isset($_POST['name'])) {
+                if (!pass('form_validate', 'user_prefs')) {
+                    return trigger('http_status', 440);
+                };
+                $saved = true;
+                $success = pass('user_update', $_POST['id'], $_POST);
+            } elseif (isset($_GET['id'])) {
+                $user = User::resolve($_GET['id']);
+                if (!$user) {
+                    // How do we say the ID is invalid?
+                    return;
+                };
+
+                $user = User::fromEmail($user['email']);
+                if (!$user) {
+                    // Same thing...
+                    return;
+                };
+
+                $history = grab(
+                    'history',
+                    array(
+                        'objectType' => 'user',
+                        'objectId' => $_GET['id'],
+                        'order' => 'DESC',
+                        'max' => 20
+                    )
+                );
+            };
+
+            trigger(
+                'render',
+                'admin_users_edit.html',
+                array(
+                    'history' => $history,
+                    'user'    => $user,
+                    'saved'   => $saved,
+                    'success' => $success
+                )
+            );
+            break;
+
+        default:
+            $users = User::search(
+                isset($_POST['email']) && strlen($_POST['email']) > 2 ? $_POST['email'] : null,
+                isset($_POST['name']) && strlen($_POST['name']) > 2 ? $_POST['name'] : null
+            );
+            trigger(
+                'render',
+                'admin_users.html',
+                array(
+                    'users' => $users
+                )
+            );
+
+        };
     }
 );
