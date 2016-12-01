@@ -129,12 +129,18 @@ class Session
      */
     public static function login($email, $password, $onetime = '')
     {
+        $oldId = false;
+        if (isset($_SESSION['user']) && isset($_SESSION['user']['id'])) {
+            $oldId = $_SESSION['user']['id'];
+        };
         if (is_array($user = grab('authenticate', $email, $password, $onetime))) {
             self::reset();
             $_SESSION['user'] = $user;
             $_SESSION['identified'] = true;
             trigger('newuser');
-            trigger('log', 'user', $user['id'], 'login');
+            if ($oldId !== $user['id']) {
+                trigger('log', 'user', $user['id'], 'login');
+            };
             return true;
         } else {
             return false;
