@@ -182,7 +182,7 @@ class ACL
      */
     public static function can($action, $objectType = null, $objectId = null)
     {
-        if (!is_array($_SESSION['ACL_INFO'])) {
+        if (!isset($_SESSION['ACL_INFO'])) {
             return false;
         };
 
