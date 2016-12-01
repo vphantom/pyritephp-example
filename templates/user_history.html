@@ -21,7 +21,7 @@
 						{{ tx.action }} {{ tx.fieldName }}
 					{% endif %}
 				</td>
-				<td class="fit"><span class="timeago" datetime="{{ tx.localtimestamp }}">{{ tx.localtimestamp }}</span> ({{ lib.format_ip(tx.ip) }})</td>
+				<td class="fit"><span class="timeago" datetime="{{ tx.localtimestamp }}">{{ tx.localtimestamp }}</span> from {{ lib.format_ip(tx.ip) }}</td>
 			</tr>
 			{% endfor %}
 		</tbody>
