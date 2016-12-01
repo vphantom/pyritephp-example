@@ -18,6 +18,10 @@
 					{% else %}
 						{{ tx.action }} {{ tx.fieldName }}
 					{% endif %}
+					{% if tx.objectType != 'user' or (tx.objectType == 'user' and tx.objectId != session.user.id) %}
+						{% if tx.action == 'modified' %}on{% endif %}
+						{{ lib.format(tx.objectType, tx.objectId) }}
+					{% endif %}
 				</td>
 				<td class="fit"><span class="timeago" datetime="{{ tx.localtimestamp }}">{{ tx.localtimestamp }}</span> from {{ lib.format_ip(tx.ip) }}</td>
 			</tr>
