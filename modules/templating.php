@@ -40,8 +40,11 @@ class Twigger
     public static function startup()
     {
         global $PPHP;
-        self::$_lang = $PPHP['config']['global']['default_lang'];
+        $req = grab('request');
+
+        self::$_lang = $req['lang'];
         $tplBase = __DIR__ . '/../templates';
+
         $twigLoader = new \Twig_Loader_Filesystem();
 
         // Don't choke if language from URL is bogus
