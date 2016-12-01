@@ -67,6 +67,7 @@ class Twigger
             array(
                 // 'cache' => __DIR__ . '/var/twig_cache',
                 'autoescape' => true,
+                'debug' => $PPHP['config']['global']['debug']
             )
         );
         $twig->addFunction(
@@ -97,6 +98,34 @@ class Twigger
                 }
             )
         );
+
+        // Add debugging tools
+        if ($PPHP['config']['global']['debug']) {
+            $twig->addExtension(new \Twig_Extension_Debug());
+            $twig->addFunction(
+                new \Twig_SimpleFunction(
+                    'debug', function () {
+                        return implode('', func_get_args());
+                    }
+                )
+            );
+        } else {
+            $twig->addFunction(
+                new \Twig_SimpleFunction(
+                    'debug', function () {
+                        return '';
+                    }
+                )
+            );
+            // Don't trust Twig to always mute dump() when debugging's off.
+            $twig->addFunction(
+                new \Twig_SimpleFunction(
+                    'dump', function () {
+                        return '';
+                    }
+                )
+            );
+        };
 
         // Load utilities globally
         try {
