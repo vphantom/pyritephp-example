@@ -135,7 +135,15 @@ class Session
         };
         if (is_array($user = grab('authenticate', $email, $password, $onetime))) {
             if ($oldId !== $user['id']) {
-                trigger('log', 'user', $user['id'], 'login');
+                trigger(
+                    'log',
+                    array(
+                        'userId'     => $user['id'],
+                        'objectType' => 'user',
+                        'objectId'   => $user['id'],
+                        'action'     => 'login'
+                    )
+                );
                 self::reset();
             };
             $_SESSION['user'] = $user;

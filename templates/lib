@@ -21,9 +21,13 @@
 {%- endmacro %}
 
 {% macro format_user(id) -%}
-	{%- set user = grab('user_resolve', id) -%}
-	{%- if user != false -%}
-		<a href="mailto:{{ user.email }}">{{ user.name }}</a>
+	{%- if id == 0 -%}
+		The System
+	{%- else -%}
+		{%- set user = grab('user_resolve', id) -%}
+		{%- if user != false -%}
+			<a href="mailto:{{ user.email }}">{{ user.name }}</a>
+		{%- endif -%}
 	{%- endif -%}
 {%- endmacro %}
 
