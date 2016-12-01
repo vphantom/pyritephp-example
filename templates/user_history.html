@@ -1,29 +1,3 @@
 {{ title('Recent Account History') }}
 <h2>Recent Account History</h2>
-<div class="table-responsive">
-	<table class="table table-hover table-condensed">
-		<tbody>
-			{% for tx in history %}
-			<tr{% if tx.action == 'modified' and (tx.fieldName=='email' or tx.fieldName=='password') %} class="warning"{% endif %}>
-				<td>
-					{% if tx.userId == session.user.id %}
-						I
-					{% else %}
-						{{ lib.format('user', tx.userId) }}
-					{% endif %}
-					{% if tx.action == 'modified' %}
-						changed {{ tx.fieldName }}
-						{% if tx.oldValue %}from '{{ lib.format(tx.fieldName, tx.oldValue) }}'{% endif %}
-						{% if tx.newValue %}to '{{ lib.format(tx.fieldName, tx.newValue) }}'{% endif %}
-					{% elseif tx.action == 'login' %}
-						logged in
-					{% else %}
-						{{ tx.action }} {{ tx.fieldName }}
-					{% endif %}
-				</td>
-				<td class="fit"><span class="timeago" datetime="{{ tx.localtimestamp }}">{{ tx.localtimestamp }}</span> from {{ lib.format_ip(tx.ip) }}</td>
-			</tr>
-			{% endfor %}
-		</tbody>
-	</table>
-</div>
+{{ lib.transactions(history) }}
