@@ -134,13 +134,13 @@ class Session
             $oldId = $_SESSION['user']['id'];
         };
         if (is_array($user = grab('authenticate', $email, $password, $onetime))) {
-            self::reset();
+            if ($oldId !== $user['id']) {
+                trigger('log', 'user', $user['id'], 'login');
+                self::reset();
+            };
             $_SESSION['user'] = $user;
             $_SESSION['identified'] = true;
             trigger('newuser');
-            if ($oldId !== $user['id']) {
-                trigger('log', 'user', $user['id'], 'login');
-            };
             return true;
         } else {
             return false;
