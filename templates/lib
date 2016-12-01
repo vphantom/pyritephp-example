@@ -8,6 +8,10 @@
 </div>
 {% endmacro %}
 
+{% macro format_timestamp(timestamp) %}
+<span class="timeago" datetime="{{ timestamp }}">{{ timestamp }}</span>
+{% endmacro %}
+
 {% macro format_ip(ip) -%}
 <a href="http://www.ip-adress.com/ip_tracer/{{ ip }}">{{ ip }}</a>
 {%- endmacro %}

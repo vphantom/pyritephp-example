@@ -266,11 +266,70 @@ class User
         };
         return ($result && $onetime !== null) ? $onetime : $result;
     }
+
+    /**
+     * Search directory of users
+     *
+     * For each matching user, each row returned is limited to id, email and
+     * name.  Specifying neither option is valid and returns all users.
+     *
+     * No more than 100 users will be returned.
+     *
+     * @param string|null $email Substring match on email
+     * @param string|null $name  Substring match on name
+     *
+     * @return array
+     */
+    public static function search($email = null, $name = null)
+    {
+        global $PPHP;
+        $db = $PPHP['db'];
+        $where = '';
+        $wheres = array();
+        $whereArgs = array();
+        if ($email !== null) {
+            $wheres[] =  'email LIKE ? ';
+            $whereArgs[] = '%' . $email . '%';
+        };
+        if ($name !== null) {
+            $wheres[] = 'name LIKE ? ';
+            $whereArgs[] = '%' . $name . '%';
+        };
+        if ($email !== null  ||  $name !== null) {
+            $where = ' WHERE ' . implode(' AND ', $wheres) . ' ';
+        };
+        return $db->selectArray("SELECT id, email, name FROM users {$where} ORDER BY id ASC LIMIT 100", $whereArgs);
+    }
 }
 
+// API events
 on('install', 'User::install');
 on('user_fromemail', 'User::fromEmail');
 on('user_resolve', 'User::resolve');
 on('authenticate', 'User::login');
 on('user_update', 'User::update');
 on('user_create', 'User::create');
+on('user_search', 'User::search');
+
+// Routes
+on(
+    'route/admin+users',
+    function () {
+        if (!pass('can', 'admin')) {
+            return trigger('http_status', 403);
+        };
+        $users = User::search(
+            isset($_POST['email']) && strlen($_POST['email']) > 2 ? $_POST['email'] : null,
+            isset($_POST['name']) && strlen($_POST['name']) > 2 ? $_POST['name'] : null
+        );
+        // Paged?
+        // ...this SOOO should be generic for other tables!
+        trigger(
+            'render',
+            'admin_users.html',
+            array(
+                'users' => $users
+            )
+        );
+    }
+);

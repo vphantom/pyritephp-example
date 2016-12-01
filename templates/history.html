@@ -23,7 +23,7 @@
 						{{ lib.format(tx.objectType, tx.objectId) }}
 					{% endif %}
 				</td>
-				<td class="fit"><span class="timeago" datetime="{{ tx.localtimestamp }}">{{ tx.localtimestamp }}</span> from {{ lib.format_ip(tx.ip) }}</td>
+				<td class="fit">{{ lib.format_timestamp(tx.localtimestamp) }} from {{ lib.format_ip(tx.ip) }}</td>
 			</tr>
 			{% endfor %}
 		</tbody>

@@ -84,17 +84,6 @@ on(
 );
 
 on(
-    'route/admin+users',
-    function () {
-        if (isGuest()) return;
-        if (!pass('can', 'admin')) {
-            return trigger('http_status', 403);
-        };
-        echo "<p>User admin dashboard can go here</p>\n";
-    }
-);
-
-on(
     'route/login',
     function () {
         $req = grab('request');
@@ -200,7 +189,6 @@ on(
             array(
                 'objectType' => 'user',
                 'objectId' => $_SESSION['user']['id'],
-                'userId' => $_SESSION['user']['id'],
                 'order' => 'DESC',
                 'max' => 100
             )
@@ -209,8 +197,7 @@ on(
             'render',
             'user_history.html',
             array(
-                'history' => $history,
-                'cols' => array_keys($history[0])
+                'history' => $history
             )
         );
     }

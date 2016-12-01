@@ -199,8 +199,41 @@ class AuditTrail
 
         return $db->selectArray($query, $queryArgs);
     }
+
+    /**
+     * Get user's last login details
+     *
+     * The last login is an associative array with the following keys:
+     *
+     * timestamp      - UTC
+     * localtimestamp - Local time zone
+     * ip             - IP address
+     *
+     * @param int $userId User ID
+     *
+     * @return array Last login, if any
+     */
+    public static function getLastLogin($userId)
+    {
+        global $PPHP;
+        $db = $PPHP['db'];
+        $last = $db->selectSingleArray(
+            "
+            SELECT timestamp, ip, datetime(timestamp, 'localtime') AS localtimestamp
+            FROM transactions
+            WHERE objectType='user' AND objectId=? AND action='login'
+            ORDER BY id DESC
+            LIMIT 1
+            ",
+            array(
+                $userId
+            )
+        );
+        return $last !== false ? $last : array('timestamp' => null, 'ip' => null);
+    }
 }
 
 on('install', 'AuditTrail::install');
 on('log', 'AuditTrail::add');
 on('history', 'AuditTrail::get');
+on('user_seen', 'AuditTrail::getLastLogin');

@@ -21,13 +21,15 @@ $().ready(function() {
   var excludedInputs = 'input[type=button], input[type=submit], input[type=reset], input[type=hidden], [disabled], :hidden';  // eslint-disable-line max-len
 
   // Bootstrap-ize forms before enabling Parsley on them
+
+  // Typical long forms
   $('form.form-auto').each(function() {
     $(this)
       .attr('name', $(this).attr('id'))
       .addClass('form-horizontal')
     ;
   });
-  $('form.form-auto input')
+  $('form.form-auto input, form.form-auto select')
     .not(excludedInputs)
     .each(function() {
       var id    = $(this).attr('id');
@@ -55,6 +57,40 @@ $().ready(function() {
       .addClass('btn btn-default')
       .wrap('<div class="form-group"></div>')
       .wrap('<div class="col-sm-offset-2 col-sm-10"></div>')
+    ;
+  });
+
+  // Short implicit inline forms
+  $('form.form-compact').each(function() {
+    $(this)
+      .attr('name', $(this).attr('id'))
+      .addClass('form-inline')
+    ;
+  });
+  $('form.form-compact input, form.form-compact select')
+    .not(excludedInputs)
+    .each(function() {
+      var id    = $(this).attr('id');
+      var label = $(this).attr('data-label');
+
+      $(this)
+        .attr('name', id)
+        .addClass('form-control')
+        .wrap('<div class="form-group"></div>')
+        .parent()
+        .prepend(
+          '<label for="'
+          + id
+          + '" class="sr-only">'
+          + label
+          + '</label>'
+        )
+      ;
+    }
+  );
+  $('form.form-compact button').each(function() {
+    $(this)
+      .addClass('btn btn-default')
     ;
   });
 
