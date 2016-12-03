@@ -23,7 +23,7 @@ This framework was actually built as the starting point for a commercial project
 
 ## CURRENTLY UNDER DEVELOPMENT!
 
-As of November 2016, PyritePHP is under active development and has not yet achieved its "v1.0.0" milestone.  You probably want to wait for that initial full-featured release before using or forking it.
+As of December 2016, PyritePHP is under active development and has not yet achieved its "v1.0.0" milestone.  You probably want to wait for that initial full-featured release before using or forking it.
 
 
 ## Installation
