@@ -336,3 +336,81 @@ on(
         );
     }
 );
+
+
+// User related routes
+//
+
+on(
+    'route/admin+users',
+    function ($path) {
+        if (!pass('can', 'admin')) {
+            return trigger('http_status', 403);
+        };
+        $f = array_shift($path);
+        switch ($f) {
+
+        case 'edit':
+            $saved = false;
+            $success = false;
+            $history = array();
+            $user = array();
+
+            if (isset($_POST['name'])) {
+                if (!pass('form_validate', 'user_prefs')) {
+                    return trigger('http_status', 440);
+                };
+                $saved = true;
+                $success = pass('user_update', $_POST['id'], $_POST);
+            } elseif (isset($_GET['id'])) {
+                $user = \Pyrite\Users::resolve($_GET['id']);
+                if (!$user) {
+                    // How do we say the ID is invalid?
+                    return;
+                };
+
+                $user = \Pyrite\Users::fromEmail($user['email']);
+                if (!$user) {
+                    // Same thing...
+                    return;
+                };
+
+                $history = grab(
+                    'history',
+                    array(
+                        'objectType' => 'user',
+                        'objectId' => $_GET['id'],
+                        'order' => 'DESC',
+                        'max' => 20
+                    )
+                );
+            };
+
+            trigger(
+                'render',
+                'admin_users_edit.html',
+                array(
+                    'history' => $history,
+                    'user'    => $user,
+                    'saved'   => $saved,
+                    'success' => $success
+                )
+            );
+            break;
+
+        default:
+            $users = \Pyrite\Users::search(
+                isset($_POST['email']) && strlen($_POST['email']) > 2 ? $_POST['email'] : null,
+                isset($_POST['name']) && strlen($_POST['name']) > 2 ? $_POST['name'] : null
+            );
+            trigger(
+                'render',
+                'admin_users.html',
+                array(
+                    'users' => $users
+                )
+            );
+
+        };
+    }
+);
