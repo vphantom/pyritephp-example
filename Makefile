@@ -46,6 +46,7 @@ dev-init:	deps
 	$(NPM) install
 
 update:	deps bin/composer
+	$(COMPOSER) self-update
 	$(COMPOSER) update
 
 dev-update:	update
