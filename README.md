@@ -99,7 +99,7 @@ You will also need to make sure that your web server or PHP process has read-wri
 
 ## Updating
 
-While the structure of the framework isn't upgradeable since it consisted of a simple "unzip" starting point, the bulk of the core components is safely packaged in NPM and Composer.  Therefore, `make update` should provide all the bug fixes you'll need down the road.
+While the structure of the framework isn't upgradeable since it consisted of a simple "unzip" starting point, the bulk of the core components is safely packaged in NPM and Packagist (Composer).  Therefore, `make update` should provide all the bug fixes you'll need down the road.
 
 
 ## MIT License
