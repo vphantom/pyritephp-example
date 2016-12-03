@@ -34,7 +34,7 @@ As of December 2016, PyritePHP is under active development and has not yet achie
 * PHP's `mcrypt` extension module
 * PHP's `pdo_sqlite` extension module
 * SQLite 3
-* Typical Linux command line tools: wget, gzip
+* Typical Linux command line tools: make, wget, gzip
 * A web server of course
 
 ### Web Server Configuration
