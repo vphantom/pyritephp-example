@@ -30,7 +30,7 @@ In addition to the run-time requirements, for building PyritePHP you will also n
 
 * NodeJS for its package manager "NPM"
 
-Run `make dev-init` to initially download the requirements for the build process.
+Run `make dev-init` to initially download the requirements for the build process.  Similarly, `make dev-update` will keep your dependencies up to date.
 
 Then, running `make distrib` any time will rebuild `client.css[.gz]` and `client.js[.gz]`.
 

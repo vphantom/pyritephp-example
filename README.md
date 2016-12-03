@@ -97,6 +97,11 @@ Run `make init`.  This will automatically download and set up PHP's Composer pac
 You will also need to make sure that your web server or PHP process has read-write access to the `var/` directory where the database, logs and template cache are stored.
 
 
+## Updating
+
+While the structure of the framework isn't upgradeable since it consisted of a simple "unzip" starting point, the bulk of the core components is safely packaged in NPM and Composer.  Therefore, `make update` should provide all the bug fixes you'll need down the road.
+
+
 ## MIT License
 
 Copyright (c) 2016 Stephane Lavergne <https://github.com/vphantom>

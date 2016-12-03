@@ -45,6 +45,13 @@ dev-init:	deps
 	@if ! which npm  >/dev/null; then echo "  **  Please install NPM, part of NodeJS."; exit 1; fi
 	$(NPM) install
 
+update:	deps bin/composer
+	$(COMPOSER) update
+
+dev-update:	update
+	@if ! which npm  >/dev/null; then echo "  **  Please install NPM, part of NodeJS."; exit 1; fi
+	$(NPM) update
+
 clean:
 	rm -fr bin node_modules vendor var
 
@@ -73,4 +80,4 @@ client.js:	$(JS_TOUCH)
 %.gz: %
 	$(GZIP) $< -c >$@
 
-.PHONY:	help deps clean init dev-init dist-clean distrib
+.PHONY:	help deps clean init dev-init update dev-update dist-clean distrib
