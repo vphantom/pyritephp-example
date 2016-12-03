@@ -88,9 +88,19 @@ url.rewrite-if-not-file (
 
 ### First-time initialization
 
-Clone or unzip this repository into the document root of the web site this will become.
+#### Download
+
+Clone or unzip this repository into the document root of the web site this will become.  Alternatively, you can use Composer to create this root directory for you, for example if you want to create `foo/`:
+
+```sh
+$ composer create-project vphantom/pyrite-php foo
+```
+
+#### Configure
 
 Edit `config.ini` to change any defaults as needed.
+
+#### Create directories and empty database
 
 Run `make init`.  This will automatically download and set up PHP's Composer package manager, then use it to download runtime dependencies locally.  Finally, it will create the database tables and the administrative user so you can log into your new installation.  You will be prompted on the command line for an e-mail address and password to use for that unrestricted account.  (**NOTE:** This prompt requires PHP's `readline`, so *it will not work on Windows*.)
 
@@ -99,7 +109,7 @@ You will also need to make sure that your web server or PHP process has read-wri
 
 ## Updating
 
-While the structure of the framework isn't upgradeable since it consisted of a simple "unzip" starting point, the bulk of the core components is safely packaged in NPM and Packagist (Composer).  Therefore, `make update` should provide all the bug fixes you'll need down the road.
+While the structure of the framework isn't upgradeable since it consisted of a simple starting point for your own application, the bulk of the core components is safely packaged in NPM and Packagist (Composer).  Therefore, `make update` should provide all the bug fixes you'll need down the road.
 
 
 ## MIT License
