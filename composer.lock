@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "73e5720a673dfce89b4ff6c9accce1ac",
-    "content-hash": "b29dc304060f9f9c99a527f88997b932",
+    "hash": "05c9ae2c9224777868e287a70cbfaea1",
+    "content-hash": "ce91829f6f12467ff84e80ce5df6aef7",
     "packages": [
         {
             "name": "sphido/events",
@@ -57,16 +57,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.28.2",
+            "version": "1.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "b22ce0eb070e41f7cba65d78fe216de29726459c"
+                "reference": "717365d089a2f5cc767d75084f9639811881f628"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/b22ce0eb070e41f7cba65d78fe216de29726459c",
-                "reference": "b22ce0eb070e41f7cba65d78fe216de29726459c",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/717365d089a2f5cc767d75084f9639811881f628",
+                "reference": "717365d089a2f5cc767d75084f9639811881f628",
                 "shasum": ""
             },
             "require": {
@@ -79,7 +79,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.28-dev"
+                    "dev-master": "1.29-dev"
                 }
             },
             "autoload": {
@@ -114,16 +114,21 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2016-11-23 18:41:40"
+            "time": "2016-11-23 18:59:28"
         },
         {
             "name": "vphantom/pyritephp-core",
-            "version": "dev-master",
+            "version": "v0.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vphantom/pyritephp-core.git",
+                "reference": "5fac51c8c77d238ea260c8fd258d4e08da8ef58e"
+            },
             "dist": {
-                "type": "path",
-                "url": "../pyritephp-core",
-                "reference": "b752751cfc29b7d615b0d74a4e13fe81c43c8477",
-                "shasum": null
+                "type": "zip",
+                "url": "https://api.github.com/repos/vphantom/pyritephp-core/zipball/5fac51c8c77d238ea260c8fd258d4e08da8ef58e",
+                "reference": "5fac51c8c77d238ea260c8fd258d4e08da8ef58e",
+                "shasum": ""
             },
             "require": {
                 "php": ">=5.5.0",
@@ -139,6 +144,7 @@
                     "src/globals.php"
                 ]
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -149,17 +155,13 @@
                 }
             ],
             "description": "PyritePHP Core",
-            "transport-options": {
-                "symlink": true
-            }
+            "time": "2016-12-03 16:05:39"
         }
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "stable",
-    "stability-flags": {
-        "vphantom/pyritephp-core": 20
-    },
+    "minimum-stability": "dev",
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

@@ -8,16 +8,8 @@
             "email": "lis@imars.com"
         }
     ],
-	 "repositories": [
-		 {
-			 "type": "path",
-			 "url": "../pyritephp-core",
-			 "options": {
-				 "symlink": true
-			 }
-		 }
-	 ],
+    "minimum-stability": "dev",
     "require": {
-		 "vphantom/pyritephp-core": "dev-master"
-	 }
+        "vphantom/pyritephp-core": "^0.7.0"
+    }
 }
