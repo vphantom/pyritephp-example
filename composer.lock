@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4b6b447b95ae6f97681bd6c489cfa56c",
-    "content-hash": "49bc26a5cd74ddf890d5362157e183f8",
+    "hash": "73e5720a673dfce89b4ff6c9accce1ac",
+    "content-hash": "b29dc304060f9f9c99a527f88997b932",
     "packages": [
         {
             "name": "sphido/events",
@@ -115,12 +115,51 @@
                 "templating"
             ],
             "time": "2016-11-23 18:41:40"
+        },
+        {
+            "name": "vphantom/pyritephp-core",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "../pyritephp-core",
+                "reference": "b752751cfc29b7d615b0d74a4e13fe81c43c8477",
+                "shasum": null
+            },
+            "require": {
+                "php": ">=5.5.0",
+                "sphido/events": "^0.3.0",
+                "twig/twig": "~1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Pyrite\\": "src/Pyrite"
+                },
+                "files": [
+                    "src/globals.php"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stéphane Lavergne",
+                    "email": "lis@imars.com"
+                }
+            ],
+            "description": "PyritePHP Core",
+            "transport-options": {
+                "symlink": true
+            }
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "vphantom/pyritephp-core": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

@@ -15,8 +15,6 @@
  * @link      https://github.com/vphantom/pyrite-php
  */
 
-require_once 'lib/email.php';
-
 /**
  * Emailing class
  *
@@ -54,7 +52,7 @@ class Emailing
         global $PPHP;
 
         $blocks = grab('render_blocks', 'email/' . $template, $args);
-        $msg = new Email();
+        $msg = new \Pyrite\Core\Email();
         $msg->X_Mailer_Info = 'PyritePHP v1.0';
         $msg->to = $to;
         $msg->from = $PPHP['config']['global']['mail_from'];

@@ -1,6 +1,23 @@
 {
+    "name": "vphantom/pyrite-php",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Stéphane Lavergne",
+            "email": "lis@imars.com"
+        }
+    ],
+	 "repositories": [
+		 {
+			 "type": "path",
+			 "url": "../pyritephp-core",
+			 "options": {
+				 "symlink": true
+			 }
+		 }
+	 ],
     "require": {
-        "twig/twig": "~1.0",
-        "sphido/events": "^0.3.0"
-    }
+		 "vphantom/pyritephp-core": "dev-master"
+	 }
 }
