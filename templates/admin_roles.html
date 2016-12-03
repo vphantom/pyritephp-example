@@ -3,9 +3,9 @@
 
 {% if added or deleted %}
 	{% if success %}
-		{{ lib.alert(success, "Change successful.") }}
+		{{ lib.alert(success, "Permission change successful.") }}
 	{% else %}
-		{{ lib.alert(success, "Change failed (perhaps a duplicate?)") }}
+		{{ lib.alert(success, "Permission change failed (perhaps a duplicate?)") }}
 	{% endif %}
 {% endif %}
 
@@ -14,7 +14,7 @@
 <p>Note: The existence of roles is declared in your <code>config.ini</code> file in section <code>acl</code>.</p>
 
 <p>
-	<form id="admin_acl_add" method="post" class="form-compact">
+	<form id="admin_role_acl_add" method="post" class="form-compact">
 		<input type="hidden" name="f" value="add">
 		<strong>New:</strong>
 		<select data-label="Role" id="role" required>
@@ -65,7 +65,7 @@
 								{% if (role == 'admin' and right.action == '*') or (role == 'member' and right.action == 'login') %}
 									&nbsp;
 								{% else %}
-									<form id="admin_acl_del" class="form-toolbar" method="post">
+									<form id="admin_role_acl_del" class="form-toolbar" method="post">
 										<input type="hidden" name="f" value="del">
 										<input type="hidden" name="role" value="{{ role }}">
 										<input type="hidden" name="action" value="{{ right.action }}">
@@ -80,6 +80,9 @@
 							<td>{% if right.objectId == 0 %}<em>all</em>{% else %}{{ right.objectId }}{% endif %}</td>
 						</tr>
 						{% endfor %}
+						{% if roles[role]|length == 0 %}
+							<tr><td colspan="4"><em>No special permissions</em></td></tr>
+						{% endif %}
 					</tbody>
 				</table>
 			</div>

@@ -340,6 +340,8 @@ on(
 on(
     'route/admin+users',
     function ($path) {
+        global $PPHP;
+
         if (!pass('can', 'admin')) {
             return trigger('http_status', 403);
         };
@@ -348,9 +350,12 @@ on(
 
         case 'edit':
             $saved = false;
+            $added = false;
+            $deleted = false;
             $success = false;
             $history = array();
             $user = array();
+            $rights = array();
 
             if (isset($_POST['name'])) {
                 if (!pass('form_validate', 'user_prefs')) {
@@ -358,6 +363,7 @@ on(
                 };
                 $saved = true;
                 $success = pass('user_update', $_POST['id'], $_POST);
+
             } elseif (isset($_GET['id'])) {
                 $user = \Pyrite\Users::resolve($_GET['id']);
                 if (!$user) {
@@ -380,16 +386,51 @@ on(
                         'max' => 20
                     )
                 );
+
+                if (isset($_POST['f'])) {
+                    switch ($_POST['f']) {
+
+                    case 'add':
+                        $added = true;
+                        $success = pass('grant', $_GET['id'], null, $_POST['action'], $_POST['objectType'], $_POST['objectId']);
+                        break;
+
+                    case 'del':
+                        $deleted = true;
+                        $success = pass('revoke', $_GET['id'], null, $_POST['action'], $_POST['objectType'], $_POST['objectId']);
+                        break;
+
+                    default:
+                    };
+                };
+
+                if (isset($_POST['addrole'])) {
+                    $added = true;
+                    $success = pass('grant', $_GET['id'], $_POST['addrole']);
+                } elseif (isset($_POST['delrole'])) {
+                    $deleted = true;
+                    $success = pass('revoke', $_GET['id'], $_POST['delrole']);
+                };
+
+                $rights = grab('user_rights', $_GET['id']);
+                $roles = grab('user_roles', $_GET['id']);
             };
 
             trigger(
                 'render',
                 'admin_users_edit.html',
                 array(
-                    'history' => $history,
-                    'user'    => $user,
-                    'saved'   => $saved,
-                    'success' => $success
+                    'actions'     => $PPHP['config']['acl']['actions'],
+                    'objectTypes' => $PPHP['config']['acl']['objectTypes'],
+                    'history'     => $history,
+                    'user'        => $user,
+                    'saved'       => $saved,
+                    'added'       => $added,
+                    'deleted'     => $deleted,
+                    'success'     => $success,
+                    'rights'      => $rights,
+                    'user_roles'  => $roles,
+                    'roles'       => $PPHP['config']['acl']['roles']
                 )
             );
             break;
@@ -446,7 +487,7 @@ on(
 
         trigger(
             'render',
-            'admin_permissions.html',
+            'admin_roles.html',
             array(
                 'actions'     => $PPHP['config']['acl']['actions'],
                 'objectTypes' => $PPHP['config']['acl']['objectTypes'],
