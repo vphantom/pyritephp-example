@@ -10,6 +10,9 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "vphantom/pyritephp-core": "^0.7.0"
+        "php": "~5.5",
+        "ext-fileinfo": "*",
+        "ext-pcre": "*",
+        "vphantom/pyritephp-core": "~0.7"
     }
 }

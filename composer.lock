@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "05c9ae2c9224777868e287a70cbfaea1",
-    "content-hash": "ce91829f6f12467ff84e80ce5df6aef7",
+    "hash": "9c1394f3484c20bb58be5c9484d8bfa3",
+    "content-hash": "62df6bf74b8432be12dec81c68d4fe9c",
     "packages": [
         {
             "name": "sphido/events",
@@ -118,20 +118,24 @@
         },
         {
             "name": "vphantom/pyritephp-core",
-            "version": "v0.7.0",
+            "version": "v0.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vphantom/pyritephp-core.git",
-                "reference": "5fac51c8c77d238ea260c8fd258d4e08da8ef58e"
+                "reference": "2d01ec93f43035f0bf96219c53814b19ef99b2d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vphantom/pyritephp-core/zipball/5fac51c8c77d238ea260c8fd258d4e08da8ef58e",
-                "reference": "5fac51c8c77d238ea260c8fd258d4e08da8ef58e",
+                "url": "https://api.github.com/repos/vphantom/pyritephp-core/zipball/2d01ec93f43035f0bf96219c53814b19ef99b2d7",
+                "reference": "2d01ec93f43035f0bf96219c53814b19ef99b2d7",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5.0",
+                "ext-mcrypt": "*",
+                "ext-pdo_sqlite": "*",
+                "ext-readline": "*",
+                "ext-session": "*",
+                "php": "~5.5",
                 "sphido/events": "^0.3.0",
                 "twig/twig": "~1.0"
             },
@@ -155,7 +159,7 @@
                 }
             ],
             "description": "PyritePHP Core",
-            "time": "2016-12-03 16:05:39"
+            "time": "2016-12-03 16:31:59"
         }
     ],
     "packages-dev": [],
@@ -164,6 +168,10 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": "~5.5",
+        "ext-fileinfo": "*",
+        "ext-pcre": "*"
+    },
     "platform-dev": []
 }
