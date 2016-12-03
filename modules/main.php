@@ -337,10 +337,6 @@ on(
     }
 );
 
-
-// User related routes
-//
-
 on(
     'route/admin+users',
     function ($path) {
@@ -412,5 +408,53 @@ on(
             );
 
         };
+    }
+);
+
+on(
+    'route/admin+roles',
+    function () {
+        global $PPHP;
+
+        if (!pass('can', 'admin')) {
+            return trigger('http_status', 403);
+        };
+
+        $f = isset($_POST['f']) ? $_POST['f'] : null;
+        $success = false;
+        $added = false;
+        $deleted = false;
+        switch ($f) {
+
+        case 'add':
+            $added = true;
+            $success = pass('grant', null, $_POST['role'], $_POST['action'], $_POST['objectType'], $_POST['objectId']);
+            break;
+
+        case 'del':
+            $deleted = true;
+            $success = pass('revoke', null, $_POST['role'], $_POST['action'], $_POST['objectType'], $_POST['objectId']);
+            break;
+
+        default:
+        };
+
+        $roles = array();
+        foreach ($PPHP['config']['acl']['roles'] as $role) {
+            $roles[$role] = grab('role_rights', $role);
+        };
+
+        trigger(
+            'render',
+            'admin_permissions.html',
+            array(
+                'actions'     => $PPHP['config']['acl']['actions'],
+                'objectTypes' => $PPHP['config']['acl']['objectTypes'],
+                'roles'       => $roles,
+                'success'     => $success,
+                'added'       => $added,
+                'deleted'     => $deleted
+            )
+        );
     }
 );

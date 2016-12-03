@@ -13,6 +13,10 @@ body {
 	width: 1%;
 }
 
+.form-toolbar .btn {
+	padding: 0;
+}
+
 /* Left menu */
 .nav-sidebar {
 	margin: 0 -21px 20px -20px;
