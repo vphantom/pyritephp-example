@@ -147,14 +147,14 @@ on(
                 if ($success = pass('user_update', $_SESSION['user']['id'], $_POST)) {
                     $name = cleanText($_SESSION['user']['name']);
                     trigger(
-                        'email_send',
+                        'sendmail',
                         "{$name} <{$oldEmail}>",
                         'editaccount'
                     );
                     $newEmail = $_POST['email'];
                     if ($newEmail !== false  &&  $newEmail !== $oldEmail) {
                         trigger(
-                            'email_send',
+                            'sendmail',
                             "{$name} <{$newEmail}>",
                             'editaccount'
                         );
@@ -221,7 +221,7 @@ on(
                 $success = true;
                 $link = 'login?' . http_build_query(array( 'email' => $_POST['email'], 'onetime' => $onetime));
                 trigger(
-                    'email_send',
+                    'sendmail',
                     "{$_POST['name']} <{$_POST['email']}>",
                     'confirmlink',
                     array(
@@ -235,7 +235,7 @@ on(
                     // the web though!
                     $success = true;
                     trigger(
-                        'email_send',
+                        'sendmail',
                         "{$user['name']} <{$user['email']}>",
                         'duplicate'
                     );
@@ -299,7 +299,7 @@ on(
                 if (($onetime = grab('user_update', $user['id'], array('onetime' => true))) !== false) {
                     $link = 'password_reset?' . http_build_query(array( 'email' => $_POST['email'], 'onetime' => $onetime));
                     trigger(
-                        'email_send',
+                        'sendmail',
                         "{$user['name']} <{$_POST['email']}>",
                         'confirmlink',
                         array(
