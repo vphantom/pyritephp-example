@@ -10,9 +10,12 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": "~5.5",
+        "php": ">=5.5",
         "ext-fileinfo": "*",
+        "ext-mcrypt": "*",
         "ext-pcre": "*",
-        "vphantom/pyritephp-core": "~0.7"
+        "ext-pdo_sqlite": "*",
+        "ext-readline": "*",
+        "vphantom/pyritephp-core": "~0.9"
     }
 }

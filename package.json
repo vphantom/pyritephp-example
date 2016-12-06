@@ -1,5 +1,5 @@
 {
-  "name": "pyritephp",
+  "name": "pyrite-php",
   "version": "1.0.0",
   "description": "PHP/Bootstrap boilerplate framework to kick-start web application development",
   "main": "index.js",
@@ -18,8 +18,6 @@
   },
   "homepage": "https://github.com/vphantom/pyrite-php#readme",
   "dependencies": {
-    "eslint": "^3.11.1",
-    "uglify-js": "^2.7.5"
   },
   "devDependencies": {
     "bootstrap": "^3.3.7",
