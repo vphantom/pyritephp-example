@@ -1,4 +1,7 @@
+client.css*
+client.js*
 bin
+fonts
 node_modules
 var
 vendor
