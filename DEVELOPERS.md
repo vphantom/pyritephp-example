@@ -135,7 +135,9 @@ Utility template `templates/lib` is loaded automatically and available globally 
 
 Most templates except `lib` and `layout.html` can call `title()` to prepend a section to the page's title, which will be used in `layout.html`.
 
-A single template file is mandatory: `layout.html` which is divided into three blocks:
+A built-in router at URL `/page/` maps to templates in `templates/pages/` (with sanitized file names).  This gives you flexibility to create any page you want, while benefitting from Twig templating.  Also, in a multilingual setup, you are free to give pages different file names across languages, yielding user-friendly URLs.
+
+A single template file is mandatory: `layout.html` which is divided into two blocks:
 
 ### head
 
