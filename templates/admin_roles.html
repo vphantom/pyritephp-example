@@ -11,8 +11,11 @@
 
 <h2>Roles</h2>
 
+{% if pass('can', 'create', 'role') %}
 <p>Note: The existence of roles is declared in your <code>config.ini</code> file in section <code>acl</code>.</p>
+{% endif %}
 
+{% if pass('can', 'edit', 'role') %}
 <p>
 	<form id="admin_role_acl_add" method="post" class="form-compact">
 		<input type="hidden" name="f" value="add">
@@ -41,7 +44,9 @@
 		<button type="submit">Add</button>
 	</form>
 </p>
+{% endif %}
 
+{% if pass('can', 'view', 'role') %}
 {% for role in roles|keys %}
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -89,3 +94,4 @@
 		</div>
 	</div>
 {% endfor %}
+{% endif %}
