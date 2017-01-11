@@ -28,7 +28,21 @@ on(
     'route/admin',
     function () {
         if (!$_SESSION['identified']) return trigger('http_status', 403);
-        if (!pass('can', 'admin')) return trigger('http_status', 403);
-        echo "<p>An admin dashboard can go here</p>\n";
+
+        $recentHistory = grab(
+            'history',
+            array(
+                'action' => array('login', 'created'),
+                'order' => 'DESC',
+                'max' => 12
+            )
+        );
+        trigger(
+            'render',
+            'admin.html',
+            array(
+                'recentHistory' => $recentHistory
+            )
+        );
     }
 );
