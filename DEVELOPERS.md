@@ -87,6 +87,10 @@ Either '' or '/xx' where `xx` is the current lowercase language code.  Therefore
 
 Path to the current page without leading nor trailing slashes.  This is the entire `PATH_INFO`, excluding the language prefix if applicable.
 
+#### req.path_args
+
+Array of strings making the individual `req.path` sections _excluding_ what was captured by the router.
+
 #### req.query
 
 Current query string, including leading '?'.  Since forms should normally use the POST method, GET queries should be considered like ordinary dynamic content.  Thus the full link to the current page should normally be:
