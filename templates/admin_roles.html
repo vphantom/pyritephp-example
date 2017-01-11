@@ -47,6 +47,7 @@
 {% endif %}
 
 {% if pass('can', 'view', 'role') %}
+{% set canEdit = pass('can', 'edit', 'role') %}
 {% for role in roles|keys %}
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -67,7 +68,7 @@
 						{% for right in roles[role] %}
 						<tr>
 							<td class="fit">
-								{% if (role == 'admin' and right.action == '*') or (role == 'member' and right.action == 'login') %}
+								{% if not canEdit or (role == 'admin' and right.action == '*') or (role == 'member' and right.action == 'login') %}
 									&nbsp;
 								{% else %}
 									<form id="admin_role_acl_del" class="form-toolbar" method="post">
