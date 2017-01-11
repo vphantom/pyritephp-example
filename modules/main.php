@@ -19,7 +19,6 @@ on(
     'route/main',
     function () {
         if (!$_SESSION['identified']) return trigger('http_status', 403);
-        if (!pass('can', 'login')) return trigger('http_status', 403);
         // TODO: Your application's authenticated interface starts here.
         echo "<p>Dashboard will go here</p>\n";
     }
