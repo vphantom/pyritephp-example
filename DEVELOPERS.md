@@ -353,6 +353,21 @@ Trigger this event to wipe the current session clean.
 
 Returns true if the current user is allowed to perform the action named `$verb`, either by itself or acting upon an object of type `$objectType`, possibly a specific instance `$objectId`.  This should be triggered with `pass()` to obtain a clean boolean result.
 
+#### can_sql (*$columnName*, *$verb*, *$objectType*)
+
+Returns an SQL boolean expression (expected to be used as part of a `WHERE` statement, for example) in the form of a `PDBquery` object.  Use with `grab()`.  The resulting query will be true (`1=1`) if the right is granted for all, false (`1=2`) if none is allowed, or a proper condition if one or several are allowed.
+
+For example, if you're looking for the 10 latest articles which the current user can view:
+
+```php
+$db = $PPHP['db'];
+$query = $db->query("SELECT * FROM articles WHERE");
+$partialQuery = grab('can_sql', 'articleId', 'view', 'article');
+$query->append($partialQuery)->order_by('articleId DESC')->limit(10);
+
+// Query is something like:
+// SELECT * FROM articles WHERE articleId IN (21, 41, 63) ORDER BY articleId DESC LIMIT 10
+```
 
 ### Logging Events
 
