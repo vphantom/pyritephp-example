@@ -369,6 +369,10 @@ $query->append($partialQuery)->order_by('articleId DESC')->limit(10);
 // SELECT * FROM articles WHERE articleId IN (21, 41, 63) ORDER BY articleId DESC LIMIT 10
 ```
 
+#### has_role (*$role*)
+
+Returns true if the current user is a member of the role named `$role`.
+
 ### Logging Events
 
 The optional logging module is used to create an audit trail in the database.
