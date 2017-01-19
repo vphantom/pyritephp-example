@@ -29,7 +29,7 @@ $().ready(function() {
       .addClass('form-horizontal')
     ;
   });
-  $('form.form-auto input, form.form-auto select')
+  $('form.form-auto input, form.form-auto select, form.form-auto textarea')
     .not(excludedInputs)
     .each(function() {
       var id    = $(this).attr('id');
@@ -67,7 +67,7 @@ $().ready(function() {
       .addClass('form-inline')
     ;
   });
-  $('form.form-compact input, form.form-compact select')
+  $('form.form-compact input, form.form-compact select, form.form-compact textarea')
     .not(excludedInputs)
     .each(function() {
       var id    = $(this).attr('id');
