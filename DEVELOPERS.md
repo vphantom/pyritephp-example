@@ -91,6 +91,10 @@ Path to the current page without leading nor trailing slashes.  This is the enti
 
 Array of strings making the individual `req.path` sections _excluding_ what was captured by the router.
 
+#### req.binary
+
+If any part of the path was `/=bin/`, it was removed from the path and caused this boolean to be `true`.  This is used internally to keep the templating engine quiet when binary output is desired.
+
 #### req.query
 
 Current query string, including leading '?'.  Since forms should normally use the POST method, GET queries should be considered like ordinary dynamic content.  Thus the full link to the current page should normally be:
