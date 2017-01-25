@@ -107,6 +107,10 @@ Current query string, including leading '?'.  Since forms should normally use th
 
 Equivalents to PHP's `$_GET[]` and `$_POST[]`.
 
+#### req.files
+
+Almost equivalent to PHP's `$_FILES[]` filtered by `is_uploaded_file()` and with the `type` key (MIME Type) replaced with a slightly safer, server-side guess based on PHP's `finfo_file()`.  Also, the four keys from `pathinfo(name)` are also added for convenience in parsing the browser-supplied suggested file name: `dirname`, `basename`, `extension` and `filename`.
+
 #### req.remote_addr
 
 The browser's IP address, as gathered from various PHP and HTTP header information, including common proxy headers.
