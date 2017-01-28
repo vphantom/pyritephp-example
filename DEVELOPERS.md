@@ -49,9 +49,13 @@ Given class `form-horizontal`, each of a form's inputs and buttons will become i
 
 ## Templating
 
+Tempates use the [Twig template engine](http://twig.sensiolabs.org/).
+
 All templates have variable `session` equivalent to `$_SESSION`, `config` which is `$PPHP['config']` as well as `grab()`, `pass()` and `filter()` from the PHP side and the special variable `req` with details about the current request.
 
 Twig's `dump()` is always available and it is forcibly muted when `config.ini`'s `global.debug` is false.  It is therefore safe to leave some of those laying around.  For convenience, `debug()` prints all its arguments when debugging is true and nothing at all when it is false.
+
+PyritePHP adds an extra tag `{% exit %}` to ease in stopping templates partly through, say in an `{% if ... %}` condition for example.  This makes templates easier to read and manage than having large blocks of content indented (or worse: not indented, but still part of a big conditional section).
 
 ### Common variables
 
