@@ -111,6 +111,17 @@ Current query string, including leading '?'.  Since forms should normally use th
 
 Equivalents to PHP's `$_GET[]` and `$_POST[]`.
 
+##### Special CGI variable `__arrays[]`
+
+If present in a form, all values of this variable are created if missing in the form data, as an empty `array()`.  This is useful as a companion to `<SELECT MULTIPLE>` for example, to have an empty array instead of no CGI variable at all when no items are selected.  For example:
+
+```html
+<input name="__arrays[]" value="keywords">
+<input name="__arrays[]" value="countries">
+```
+
+The above would guarantee that if CGI variables `keywords` or `countries` are missing, they will be created as empty arrays.
+
 #### req.files
 
 Almost equivalent to PHP's `$_FILES[]` filtered by `is_uploaded_file()` and with the `type` key (MIME Type) replaced with a slightly safer, server-side guess based on PHP's `finfo_file()`.  Also, the four keys from `pathinfo(name)` are also added for convenience in parsing the browser-supplied suggested file name: `dirname`, `basename`, `extension` and `filename`.
